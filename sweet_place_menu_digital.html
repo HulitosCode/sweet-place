@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sweet Place Café & Bar — Menu Digital</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            red: '#d62d20',
+                            darkRed: '#b31e13',
+                            gold: '#d4af37',
+                            amber: '#f39c12',
+                            dark: '#1e1e1e',
+                            lightBg: '#f8f9fa',
+                            card: '#ffffff'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Poppins', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar & smooth behavior */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .banner-overlay {
+            background: linear-gradient(180deg, rgba(15, 15, 15, 0.4) 0%, rgba(15, 15, 15, 0.85) 100%);
+        }
+        .backdrop-blur-custom {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-brand-red selection:text-white">
+
+    <!-- WELCOME / DINING OPTION MODAL (Modal de Boas-Vindas) -->
+    <div id="welcome-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md transition-opacity duration-300">
+        <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl p-6 text-center transform transition-transform duration-300 scale-100">
+            <div class="w-20 h-20 mx-auto mb-4 bg-gradient-to-tr from-brand-red to-brand-darkRed rounded-2xl flex items-center justify-center shadow-lg shadow-brand-red/30 text-white font-extrabold text-3xl tracking-tighter border-2 border-white/20">
+                S
+            </div>
+            <h2 class="text-2xl font-bold text-gray-900 mb-1">Sweet Place</h2>
+            <p class="text-sm text-gray-500 mb-6">Café & Bar — Seja muito bem-vindo!</p>
+            <p class="text-base font-medium text-gray-700 mb-4">Como deseja realizar o seu pedido hoje?</p>
+            
+            <div class="grid grid-cols-2 gap-4">
+                <button onclick="setOrderType('dine-in')" class="flex flex-col items-center justify-center p-4 rounded-2xl border-2 border-brand-red/20 bg-red-50/50 hover:bg-brand-red hover:text-white text-brand-red transition-all duration-200 group shadow-sm hover:shadow-md">
+                    <i class="fa-solid font-bold fa-utensils text-2xl mb-2 group-hover:scale-110 transition-transform"></i>
+                    <span class="font-semibold text-sm">Comer Aqui</span>
+                    <span class="text-[10px] opacity-75 mt-0.5">Servir na mesa</span>
+                </button>
+                <button onclick="setOrderType('takeaway')" class="flex flex-col items-center justify-center p-4 rounded-2xl border-2 border-brand-amber/20 bg-amber-50/50 hover:bg-brand-amber hover:text-white text-brand-amber transition-all duration-200 group shadow-sm hover:shadow-md">
+                    <i class="fa-solid fa-bag-shopping text-2xl mb-2 group-hover:scale-110 transition-transform"></i>
+                    <span class="font-semibold text-sm">Para Levar</span>
+                    <span class="text-[10px] opacity-75 mt-0.5">Retirada no balcão</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP CONTAINER -->
+    <div class="max-w-md md:max-w-2xl lg:max-w-4xl mx-auto w-full min-h-screen bg-white shadow-2xl flex flex-col relative pb-24">
+
+        <!-- HEADER BANNER & RESTAURANT INFO -->
+        <header id="s-rest" class="relative w-full h-64 md:h-80 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=1200&q=80');">
+            <div class="absolute inset-0 banner-overlay flex flex-col justify-between p-5 md:p-8">
+                <!-- Top Navigation Bar -->
+                <div class="flex items-center justify-between">
+                    <span id="dining-type-badge" class="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-white text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5 border border-white/30">
+                        <i class="fa-solid fa-utensils text-brand-gold"></i> Comer Aqui
+                    </span>
+                    <button onclick="toggleOrdersModal()" class="px-3.5 py-1.5 bg-black/40 hover:bg-black/60 text-white rounded-full text-xs font-medium backdrop-blur-md transition border border-white/20 flex items-center gap-2">
+                        <i class="fa-solid fa-clock-rotate-left text-brand-gold"></i>
+                        <span>Meus Pedidos</span>
+                    </button>
+                </div>
+
+                <!-- Restaurant Brand Card -->
+                <div class="flex items-end gap-4">
+                    <!-- LOGO OFICIAL COM FUNDO VERMELHO VIBRANTE -->
+                    <div class="w-20 h-20 md:w-24 md:h-24 bg-gradient-to-tr from-brand-red via-red-600 to-brand-darkRed rounded-2xl shadow-xl border-2 border-white/90 flex items-center justify-center shrink-0">
+                        <div class="relative flex items-center justify-center">
+                            <span class="text-white font-extrabold text-4xl md:text-5xl tracking-tighter drop-shadow-md">S</span>
+                            <i class="fa-solid fa-utensils text-brand-gold text-xs absolute -bottom-1 -right-1 drop-shadow"></i>
+                        </div>
+                    </div>
+                    <div class="text-white">
+                        <div class="flex items-center gap-2">
+                            <h1 class="text-2xl md:text-3xl font-extrabold tracking-tight">Sweet Place</h1>
+                            <span class="bg-emerald-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Aberto</span>
+                        </div>
+                        <p class="text-xs md:text-sm text-gray-200 mt-1 flex items-center gap-1">
+                            <i class="fa-solid fa-martini-glass-citrus text-brand-gold"></i> Café & Bar Elegante • Especialidades & Bebidas
+                        </p>
+                        <div class="flex items-center gap-3 mt-2 text-xs text-gray-300">
+                            <span class="flex items-center gap-1"><i class="fa-solid fa-star text-amber-400"></i> 4.8 (240+)</span>
+                            <span>•</span>
+                            <span class="flex items-center gap-1"><i class="fa-solid fa-location-dot text-brand-red"></i> Maputo</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- SEARCH BAR & CATEGORIES STICKY NAV -->
+        <div class="sticky top-0 z-30 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100 p-4 space-y-3">
+            <!-- Search Bar -->
+            <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                <input type="text" id="search-input" onkeyup="filterProducts()" placeholder="Buscar pratos, cocktails, bebidas..." class="w-full pl-11 pr-10 py-2.5 bg-gray-100 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-red/50 transition">
+                <button id="clear-search" onclick="clearSearch()" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-sm">
+                    <i class="fa-solid fa-circle-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Categories Horizontal Slider -->
+            <div class="flex items-center gap-2 overflow-x-auto hide-scrollbar py-1" id="categories-container">
+                <!-- Injected dynamically via JS -->
+            </div>
+        </div>
+
+        <!-- PRODUCTS DISPLAY CONTAINER -->
+        <main class="p-4 space-y-8 flex-1">
+            <div id="products-section">
+                <!-- Categorized products injected dynamically -->
+            </div>
+        </main>
+
+        <!-- BOTTOM FLOATING CART BAR -->
+        <div id="floating-cart" class="fixed bottom-0 left-0 right-0 z-40 p-4 max-w-md md:max-w-2xl lg:max-w-4xl mx-auto pointer-events-none">
+            <button onclick="openCartDrawer()" class="pointer-events-auto w-full bg-gradient-to-r from-brand-red to-brand-darkRed hover:from-brand-darkRed hover:to-red-700 text-white rounded-2xl p-4 shadow-xl flex items-center justify-between transition-all duration-300 transform active:scale-95">
+                <div class="flex items-center gap-3">
+                    <div class="relative bg-white/20 p-2.5 rounded-xl">
+                        <i class="fa-solid fa-basket-shopping text-lg"></i>
+                        <span id="cart-badge-count" class="absolute -top-2 -right-2 bg-brand-gold text-gray-900 font-extrabold text-xs w-5 h-5 rounded-full flex items-center justify-center border-2 border-brand-red">0</span>
+                    </div>
+                    <div class="text-left">
+                        <span class="text-xs text-white/80 uppercase font-semibold block">Sua Sacola</span>
+                        <span id="cart-summary-items" class="text-sm font-medium">0 itens selecionados</span>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span id="cart-summary-total" class="font-extrabold text-lg">0 MT</span>
+                    <i class="fa-solid fa-chevron-right text-sm"></i>
+                </div>
+            </button>
+        </div>
+
+    </div>
+
+    <!-- PRODUCT DETAIL MODAL -->
+    <div id="product-modal" class="fixed inset-0 z-50 hidden bg-black/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="bg-white w-full max-w-lg rounded-t-3xl sm:rounded-3xl overflow-hidden shadow-2xl max-h-[90vh] flex flex-col animate-slide-up">
+            <div class="relative h-64 bg-gray-200 shrink-0">
+                <img id="modal-product-img" src="" alt="" class="w-full h-full object-cover">
+                <button onclick="closeProductModal()" class="absolute top-4 right-4 w-9 h-9 bg-black/50 hover:bg-black/70 text-white rounded-full flex items-center justify-center backdrop-blur-md transition">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+                <span id="modal-product-category" class="absolute bottom-4 left-4 px-3 py-1 bg-brand-red text-white text-xs font-semibold rounded-full shadow-md"></span>
+            </div>
+            <div class="p-6 overflow-y-auto space-y-4 flex-1">
+                <div>
+                    <h3 id="modal-product-title" class="text-2xl font-bold text-gray-900"></h3>
+                    <p id="modal-product-price" class="text-xl font-extrabold text-brand-red mt-1"></p>
+                </div>
+                <p id="modal-product-desc" class="text-gray-600 text-sm leading-relaxed"></p>
+
+                <!-- Note / Observations -->
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wider mb-1.5">Observação Especial</label>
+                    <textarea id="modal-product-obs" rows="2" placeholder="Ex: Sem cebola, bem passado, gelo e limão..." class="w-full p-3 bg-gray-100 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-red/50"></textarea>
+                </div>
+            </div>
+            
+            <div class="p-4 border-t border-gray-100 bg-gray-50 flex items-center justify-between gap-4 shrink-0">
+                <!-- Stepper -->
+                <div class="flex items-center gap-3 bg-white border border-gray-200 rounded-xl p-1.5 shadow-sm">
+                    <button onclick="changeModalQty(-1)" class="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center transition font-bold text-base">-</button>
+                    <span id="modal-qty" class="font-bold text-gray-800 text-base w-6 text-center">1</span>
+                    <button onclick="changeModalQty(1)" class="w-8 h-8 rounded-lg bg-brand-red hover:bg-brand-darkRed text-white flex items-center justify-center transition font-bold text-base">+</button>
+                </div>
+
+                <button id="add-to-cart-btn" onclick="addCurrentProductToCart()" class="flex-1 bg-brand-red hover:bg-brand-darkRed text-white py-3 px-4 rounded-xl font-bold shadow-md hover:shadow-lg transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-cart-plus"></i>
+                    <span>Adicionar • <span id="modal-total-btn-price">0 MT</span></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CART SLIDING DRAWER & CHECKOUT -->
+    <div id="cart-drawer" class="fixed inset-0 z-50 hidden">
+        <div onclick="closeCartDrawer()" class="absolute inset-0 bg-black/60 backdrop-blur-xs transition-opacity"></div>
+        
+        <div class="absolute inset-y-0 right-0 max-w-full flex pl-10">
+            <div class="w-screen max-w-md bg-white shadow-2xl flex flex-col justify-between">
+                <!-- Header -->
+                <div class="p-4 bg-brand-dark text-white flex items-center justify-between shadow-md">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-bag-shopping text-brand-gold text-xl"></i>
+                        <h2 class="font-bold text-lg">Sua Sacola de Pedidos</h2>
+                    </div>
+                    <button onclick="closeCartDrawer()" class="text-gray-400 hover:text-white p-1">
+                        <i class="fa-solid fa-xmark text-2xl"></i>
+                    </button>
+                </div>
+
+                <!-- Items List -->
+                <div id="cart-drawer-items" class="flex-1 overflow-y-auto p-4 space-y-3 divide-y divide-gray-100">
+                    <!-- Dynamic cart items injected here -->
+                </div>
+
+                <!-- Checkout Form & Footer -->
+                <div class="p-4 bg-gray-50 border-t border-gray-200 space-y-4">
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs text-gray-500">
+                            <span>Subtotal</span>
+                            <span id="drawer-subtotal">0 MT</span>
+                        </div>
+                        <div class="flex justify-between text-base font-extrabold text-gray-900 border-t border-gray-200 pt-2">
+                            <span>Total Geral</span>
+                            <span id="drawer-total" class="text-brand-red">0 MT</span>
+                        </div>
+                    </div>
+
+                    <!-- Customer Form -->
+                    <div class="space-y-2.5 pt-2 border-t border-gray-200">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Seu Nome *</label>
+                            <input type="text" id="customer-name" placeholder="Digite seu nome..." class="w-full px-3 py-2 bg-white border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-red/50">
+                        </div>
+
+                        <div id="table-number-container">
+                            <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Número da Mesa *</label>
+                            <input type="number" id="customer-table" placeholder="Ex: 05" class="w-full px-3 py-2 bg-white border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-red/50">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-700 uppercase mb-1">Observação do Pedido</label>
+                            <input type="text" id="order-notes" placeholder="Ex: Trazer guardanapos extras..." class="w-full px-3 py-2 bg-white border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-red/50">
+                        </div>
+                    </div>
+
+                    <button onclick="submitOrderToWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-xl font-bold shadow-lg flex items-center justify-center gap-2 transition transform active:scale-98">
+                        <i class="fa-brands fa-whatsapp text-xl"></i>
+                        <span>Enviar Pedido via WhatsApp</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ORDERS HISTORY MODAL (Meus Pedidos) -->
+    <div id="orders-modal" class="fixed inset-0 z-50 hidden bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[85vh]">
+            <div class="p-4 bg-gray-900 text-white flex items-center justify-between">
+                <h3 class="font-bold text-lg flex items-center gap-2">
+                    <i class="fa-solid fa-clock-rotate-left text-brand-gold"></i> Meus Pedidos
+                </h3>
+                <button onclick="toggleOrdersModal()" class="text-gray-400 hover:text-white">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div id="orders-list-container" class="p-4 overflow-y-auto space-y-4 flex-1">
+                <!-- Orders injected dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        /* ==========================================================================
+           MENU REAL SWEET PLACE — 289 produtos / 38 subcategorias
+           Fonte: "Sweet Place — Menu Digital.html".
+           Imagens: 1 foto Unsplash curada por subcategoria (itens da mesma
+           subcategoria partilham a foto; fallback via onerror no card).
+           ========================================================================== */
+        const SUBCATEGORY_IMAGES = {
+            // COMIDA
+            'pequeno-almoco': 'https://images.unsplash.com/photo-1533089860892-a7c6f0a88666?auto=format&fit=crop&w=800&q=80',
+            'tapas':          'https://images.unsplash.com/photo-1547592166-23ac45744acd?auto=format&fit=crop&w=800&q=80',
+            'tostas':         'https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=800&q=80',
+            'hamburgueres':   'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=800&q=80',
+            'saladas':        'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=800&q=80',
+            'pizzas':         'https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=800&q=80',
+            'massas':         'https://images.unsplash.com/photo-1473093295043-cdd812d0e601?auto=format&fit=crop&w=800&q=80',
+            'aves':           'https://images.unsplash.com/photo-1598515214211-89d3c73ae83b?auto=format&fit=crop&w=800&q=80',
+            'carnes':         'https://images.unsplash.com/photo-1600891964092-4316c288032e?auto=format&fit=crop&w=800&q=80',
+            'mariscos':       'https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=800&q=80',
+            'sushi':          'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=800&q=80',
+            'extras':         'https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=800&q=80',
+            // BEBIDAS
+            'cafetaria':      'https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?auto=format&fit=crop&w=800&q=80',
+            'refrescos':      'https://images.unsplash.com/photo-1554866585-cd94860890b7?auto=format&fit=crop&w=800&q=80',
+            'sumos':          'https://images.unsplash.com/photo-1613478223719-2ab802602423?auto=format&fit=crop&w=800&q=80',
+            'draft':          'https://images.unsplash.com/photo-1436076863939-06870fe779c2?auto=format&fit=crop&w=800&q=80',
+            'garrafa':        'https://images.unsplash.com/photo-1535958636474-b021ee887b13?auto=format&fit=crop&w=800&q=80',
+            'lata':           'https://images.unsplash.com/photo-1618885472179-5e474019f2a9?auto=format&fit=crop&w=800&q=80',
+            'sem-alcool':     'https://images.unsplash.com/photo-1608270586620-248524c67de9?auto=format&fit=crop&w=800&q=80',
+            'cidras':         'https://images.unsplash.com/photo-1566633806327-68e152aaf26d?auto=format&fit=crop&w=800&q=80',
+            'sangria':        'https://images.unsplash.com/photo-1541544741938-0af808871cc0?auto=format&fit=crop&w=800&q=80',
+            'vinho-copo':     'https://images.unsplash.com/photo-1516997121675-4c2d1684aa3e?auto=format&fit=crop&w=800&q=80',
+            // COCKTAILS & SHOTS
+            'cocktails-sem':      'https://images.unsplash.com/photo-1536935338788-846bb9981813?auto=format&fit=crop&w=800&q=80',
+            'cocktails':          'https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=800&q=80',
+            'sweet-cocktails':    'https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=800&q=80',
+            'champanhe-cocktails':'https://images.unsplash.com/photo-1560508180-03f285f67ded?auto=format&fit=crop&w=800&q=80',
+            'caipirinhas':        'https://images.unsplash.com/photo-1558001373-7b93ee48ffa0?auto=format&fit=crop&w=800&q=80',
+            'shots':              'https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=800&q=80',
+            'licor':              'https://images.unsplash.com/photo-1569529465841-dfecdab7503b?auto=format&fit=crop&w=800&q=80',
+            'simples':            'https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=800&q=80',
+            // GARRAFAS
+            'espumantes':      'https://images.unsplash.com/photo-1598153346810-860daa814c4b?auto=format&fit=crop&w=800&q=80',
+            'vinhos-brancos':  'https://images.unsplash.com/photo-1609951651556-5334e2706168?auto=format&fit=crop&w=800&q=80',
+            'vinhos-tintos':   'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=800&q=80',
+            'reservas':        'https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?auto=format&fit=crop&w=800&q=80',
+            'garrafa-fortes':  'https://images.unsplash.com/photo-1527281400683-1aae777175f8?auto=format&fit=crop&w=800&q=80',
+            // SOBREMESAS
+            'sobremesa':       'https://images.unsplash.com/photo-1533134242443-d4fd215305ad?auto=format&fit=crop&w=800&q=80',
+            'milkshakes':      'https://images.unsplash.com/photo-1572490122747-3968b75cc699?auto=format&fit=crop&w=800&q=80',
+            'sorvetes':        'https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?auto=format&fit=crop&w=800&q=80'
+        };
+
+        /* Estrutura compacta por subcategoria: itens [nome, preço, descrição?] */
+        const MENU_REAL = [
+            /* ---------- COMIDA ---------- */
+            { id: 'pequeno-almoco', g: 'comida', gName: 'Comida', n: 'Pequenos Almoços', items: [
+                ['Pequeno Almoço Simples',350,'2 ovos, 2 torradas, batata frita & salada'],
+                ['Pequeno Almoço à Sweet Place',650,'2 ovos, 2 torradas, batata frita, 2 salsichas, feijão doce, cogumelos, peito de frango grelhado & tomate grelhado'],
+                ['Pequeno Almoço Inglês',590,'2 ovos, 2 torradas, 2 salsichas, feijão doce, tomate grelhado & fiambre'],
+                ['Omolete Simples',200,'Ovo e 2 torradas & manteiguinha'],
+                ['Omolete de Frango',450,'Ovo, 2 torradas, manteiguinha & peito de frango']
+            ]},
+            { id: 'tapas', g: 'comida', gName: 'Comida', n: 'Tapas', items: [
+                ['Petisco de Cabrito',400],
+                ['Petisco de Galinha Cafrial',400],
+                ['Petisco de Rabada',550],
+                ['Sopa do Dia',250],
+                ['Pão de Alho com Queijo',180,'Pão, alho, manteiga, salsa e queijo mozzarella'],
+                ['Rissóis (3 un.)',180],
+                ['Chamussas de Carne (3 un.)',180]
+            ]},
+            { id: 'tostas', g: 'comida', gName: 'Comida', n: 'Tostas e Sandes', items: [
+                ['Tosta de Queijo',200,'2 fatias de pão, queijo e manteiga'],
+                ['Tosta de Fiambre',220,'2 fatias de pão, fiambre e manteiga'],
+                ['Tosta Mista',250,'2 fatias de pão, fiambre, queijo e manteiga'],
+                ['Tosta de Frango',275,'2 fatias de pão, peito de frango, maionese, cebola e manteiga'],
+                ['Prego Simples',250,'Pão e alcatra'],
+                ['Prego Completo',450,'Pão, alcatra, ovo e batata frita']
+            ]},
+            { id: 'hamburgueres', g: 'comida', gName: 'Comida', n: 'Hambúrgueres', items: [
+                ['Hambúrguer Simples',200,'Hambúrguer, alface, tomate, cebola, tomate sauce, maionese & pão'],
+                ['Hambúrguer com Queijo',300,'Hambúrguer, queijo, alface, tomate, cebola, tomate sauce, maionese & pão'],
+                ['Hambúrguer com Bacon',375,'Hambúrguer, bacon, alface, tomate, cebola, tomate sauce, maionese & pão'],
+                ['Hambúrguer Completo',450,'Hambúrguer, ovo, queijo, bacon, alface, tomate, cebola, tomate sauce, maionese, batata frita & pão'],
+                ['Hambúrguer à Sweet Place',650,'Hambúrguer duplo, ovo, queijo, bacon, alface, tomate, cebola, tomate sauce, maionese, batata frita & pão']
+            ]},
+            { id: 'saladas', g: 'comida', gName: 'Comida', n: 'Saladas', items: [
+                ['Salada de Atum e Ovo',550,'Atum, alface, tomate cereja, cebola roxa, ovo & pimentos'],
+                ['Salada de Frango e Ananás',600,'Alface, pimentos, peito de frango & ananás']
+            ]},
+            { id: 'pizzas', g: 'comida', gName: 'Comida', n: 'Pizzas', items: [
+                ['Pizza Margarita',800,'Dough, molho de napolitana, mozarela, orégano, sal'],
+                ['Pizza Mexicana',850,'Dough, molho de napolitana, mozarela, orégano, sal, carne moída, piripiri, pimentos e cebola'],
+                ['Pizza de Chouriço',950,'Dough, molho de napolitana, mozarela, orégano, sal, chouriço, azeitonas laminadas, pimentos'],
+                ['Pizza Vegetariana',1050,'Dough, molho de napolitana, mozarela, orégano, sal, cogumelos, cebola roxa, tomate cereja, espinafre, alcachofras, azeitonas laminadas, pimentos e queijo feta'],
+                ['Pizza de Frango & Cogumelos',950,'Dough, molho de napolitana, mozarela, orégano, sal, cogumelos, peito de frango'],
+                ['Pizza Cubana/Picante',1000,'Molho de tomate, mozzarella, cebola, jalapeño/malagueta, frango & maionese'],
+                ['Pizza Duas Estações',1100,'Metade frango / mexicana'],
+                ['Pizza de Mariscos',1300,'Molho de tomate, mozzarella, cebola, lulas & camarão'],
+                ['Pizza Regina',950,'Dough, molho de napolitana, mozarela, orégano, sal, cogumelos, fiambre'],
+                ['Pizza Tutto',1000,'Dough, molho de napolitana, mozarela, orégano, sal, fiambre, bacon, salame, cogumelos, cebola'],
+                ['Pizza à Sweet Place',1300,'Dough, molho de napolitana, mozarela, orégano, sal, carne moída, peito de frango, cogumelos, babalaza']
+            ]},
+            { id: 'massas', g: 'comida', gName: 'Comida', n: 'Massas', items: [
+                ['Bolonhesa Penne',590,'Molho de napolitana, carne moída & queijo parmesão'],
+                ['Fettucine Alfredo',690,'Molho de natas, alho, bacon, fiambre e cogumelos, queijo parmesão']
+            ]},
+            { id: 'aves', g: 'comida', gName: 'Comida', n: 'Aves', items: [
+                ['Frango Inteiro Grelhado',850,'Marinado ao molho da casa, com batata frita & salada'],
+                ['Meio Frango Grelhado',450,'Marinado ao molho da casa, com batata frita & salada'],
+                ['Frango Inteiro à Zambeziana',950,'Marinado, com molho de coco, batata frita & salada'],
+                ['Meio Frango à Zambeziana',500,'Marinado, com molho de coco, batata frita & salada'],
+                ['Frango Inteiro à Passarinho',850,'Frito trinchado, com batata frita'],
+                ['Meio Frango à Passarinho',450,'Frito trinchado, com batata frita'],
+                ['Peito de Frango Grelhado',550,'Batata frita & salada'],
+                ['Espetada de Peito de Frango',500,'Batata frita & salada'],
+                ['Cordoniz (3 un.)',650,'Batata frita & salada']
+            ]},
+            { id: 'carnes', g: 'comida', gName: 'Comida', n: 'Carne de Vaca', items: [
+                ['Espetada de Carne de Vaca',650],
+                ['T-Bone 500g',1260],
+                ['Babalaza 500g',650,'Servido com batata frita'],
+                ['Worse 500g',780,'Servido com batata frita']
+            ]},
+            { id: 'mariscos', g: 'comida', gName: 'Comida', n: 'Mariscos', items: [
+                ['Peixe Vermelho Grelhado',900,'Servido com vegetais, fritas e salada'],
+                ['Lulas Grelhadas',900,'400g de lulas, servido com batata frita e salada']
+            ]},
+            { id: 'sushi', g: 'comida', gName: 'Comida', n: 'Sushi', nota: 'Preços do sushi lidos de uma foto desfocada — confirme no local.', items: [
+                ['Salmon Rose (3 pcs)',400,'Arroz, peixe, maionese, caviar'],
+                ['California (4 pcs)',450,'Arroz, semente de sésamo, abacate, peixe'],
+                ['Maki (4 pcs)',490,'Arroz, peixe'],
+                ['Caviar Avalanche (4 pcs)',450,'Arroz, caranguejo, alface, abacate, caviar'],
+                ['Sweet Caviar (6 pcs)',950,'Camarão frito, arroz, peixe, caviar'],
+                ['Mista (12 pcs)',1300,'4 de camarão, 4 de salmão, 4 de frutas'],
+                ['Mista (20 pcs)',1900]
+            ]},
+            { id: 'extras', g: 'comida', gName: 'Comida', n: 'Extras', nota: 'Preços dos extras lidos de uma foto desfocada — confirme no local.', items: [
+                ['Extra Mozarela (pizza)',200],
+                ['Extra Spicy Chicken (pizza)',200],
+                ['Extra Cogumelos (pizza)',200],
+                ['Extra Azeitonas Laminadas (pizza)',200],
+                ['Dose de Arroz de Vegetais',200],
+                ['Dose de Batata Frita',200],
+                ['Xima',200]
+            ]},
+
+            /* ---------- BEBIDAS ---------- */
+            { id: 'cafetaria', g: 'bebidas', gName: 'Bebidas', n: 'Cafetaria', items: [
+                ['Café Expresso',100],['Café Descafenado',100],['Café Gelado',150],['Chá Diversos',100],
+                ['Chá Descafenado',75],['Galão',150],['Cappuccino com Leite / Creme',150],['Hot Chocolate',150]
+            ]},
+            { id: 'refrescos', g: 'bebidas', gName: 'Bebidas', n: 'Refrescos / Mixers', items: [
+                ['Coca-Cola',100],['Coca Zero',100],['Sprite',100],['Fanta Laranja',100],['Fanta Ananás',100],
+                ['Fanta Uva',100],['Sparletta',100],['Crème Soda',100],['Água Tónica',100],['Dry Lemon',100],['Ginger Ale',100]
+            ]},
+            { id: 'sumos', g: 'bebidas', gName: 'Bebidas', n: 'Sumos & Água', items: [
+                ['Appletiser (garrafa)',150],
+                ['Grapetiser (garrafa)',150],
+                ['Cappy',130,'Manga, laranja, exótico'],
+                ['Sumo Natural',250,'Laranja, ananás, maracujá, morango, malambe'],
+                ['Sumo Natural Mistura',300],
+                ['Sumo Ceres 1L',200],
+                ['Água Pequena',75],
+                ['Água Grande',120],
+                ['Água das Pedras',200]
+            ]},
+            { id: 'draft', g: 'bebidas', gName: 'Bebidas', n: 'Cervejas à Draft', items: [
+                ['Copo Heineken 250ml',130],['Copo Heineken 350ml',160],['Copo Heineken 500ml',220],
+                ['Mafalala Trigo 350ml',175],['Mafalala Lager 350ml',175],['Super Bock 350ml',140],
+                ['Stella 330ml',150],['Castel 350ml',150]
+            ]},
+            { id: 'garrafa', g: 'bebidas', gName: 'Bebidas', n: 'Cervejas à Garrafa', items: [
+                ['2M Txoti',110],['Pretinha',110],['Lite Grande',130],['Corona',150],['Stella',150],
+                ['Txilar Mini',110],['Super Bock',130],['Budweiser',130],['Erdinger',170],['Heineken Mini',130]
+            ]},
+            { id: 'lata', g: 'bebidas', gName: 'Bebidas', n: 'Cervejas à Lata', items: [
+                ['2M',120],['Impala',120],['Heineken',130],['Heineken 500ml',200],['Castle Lite',150],
+                ['Stella',150],['Mayfair Cereja',140],['Mafalala IPA',170],['Mafalala Trigo',170],['Mafalala Lager',170]
+            ]},
+            { id: 'sem-alcool', g: 'bebidas', gName: 'Bebidas', n: 'Cervejas sem Álcool', items: [
+                ['Heineken 0%',120],['Corona 0%',120],['Savanna 0%',130]
+            ]},
+            { id: 'cidras', g: 'bebidas', gName: 'Bebidas', n: 'Cidras', items: [
+                ['Hunters Gold',130],['Savanna',130],['Brutal',130],['Brutal Lata',170],['Bernini',140],
+                ['Bernini Morango',140],['Bernini Lata',190],['Flying Fish',150],['Spin',150],['Mayfair',150]
+            ]},
+            { id: 'sangria', g: 'bebidas', gName: 'Bebidas', n: 'Sangria 1 Litro', items: [
+                ['Sangria Vinho Tinto',1690],['Sangria Vinho Branco',1690],['Sangria Espumante Branco',1850],
+                ['Sangria Espumante Rosé',1850],['Sangria Espumante s/ Álcool',1490]
+            ]},
+            { id: 'vinho-copo', g: 'bebidas', gName: 'Bebidas', n: 'Vinho Mini (250ml)', items: [
+                ['Cavalo Branco 250ml',450],['Segredos de São Miguel 250ml',650],['Casa da Malta Mini',450]
+            ]},
+
+            /* ---------- COCKTAILS & SHOTS ---------- */
+            { id: 'cocktails-sem', g: 'cocktails', gName: 'Cocktails & Shots', n: 'Cocktails sem Álcool', items: [
+                ['Strawberry Daiquiri (sem álcool)',300],['Passion Limonada',300],['Limonada de Menta',300],
+                ['Sprite à Sweet Place',300],['Ananás Daiquiri (sem álcool)',300],['Piña Colada (sem álcool)',300],['Blue Hawaii (sem álcool)',300]
+            ]},
+            { id: 'cocktails', g: 'cocktails', gName: 'Cocktails & Shots', n: 'Cocktails com Álcool', items: [
+                ['Blue Lagoon',350],['Sex on the Beach',350],['Tequila Sunrise',350],['Piña Colada',350],
+                ['Strawberry Daiquiri',350],['Savanarita',350],['Brutalita',350],['Corona Sunrise',350],
+                ['Margarita',350],['Margarita Blue/Red',350],['Margarita Frozen',350],['Dom Pedro',350],
+                ['Long Island Ice Tea',350],['Tipotinto',350],['Martini Espresso',350]
+            ]},
+            { id: 'sweet-cocktails', g: 'cocktails', gName: 'Cocktails & Shots', n: 'Cocktails à Sweet Place', items: [
+                ['Sweet Strawberry',500],['Sweet Passion Fruit',500],['Sweet Tropical',500],
+                ['Sweet Blue Muler',500],['Martini Dry',500],['Gin Strawberry',500]
+            ]},
+            { id: 'champanhe-cocktails', g: 'cocktails', gName: 'Cocktails & Shots', n: 'Cocktails com Champanhe', items: [
+                ['Tropical Champanhe',350],['Champanhe Pink',350],['Mimosa Champanhe',350],['Jack Frost Mimosa',350]
+            ]},
+            { id: 'caipirinhas', g: 'cocktails', gName: 'Cocktails & Shots', n: 'Caipirinhas / Mojitos', items: [
+                ['Caipirinha de Limão',250],['Caipirinha de Morango',250],['Caipirinha de Maracujá',250],
+                ['Caipirinha Blue',300],['Caipirinha de Frutos Vermelhos',300],
+                ['Mojito de Limão',400],['Mojito de Morango',400],['Mojito de Maracujá',400],
+                ['Mojito de Frutos Vermelhos',500],['Mojito Blue',450]
+            ]},
+            { id: 'shots', g: 'cocktails', gName: 'Cocktails & Shots', n: 'Shots', items: [
+                ['Olmeca Tequila',250],['José Cuervo Tequila',250],['Jägermeister',300],['Blow Job',350],
+                ['Sambuca',250],['Bob Marley',300],['Jägerbomb',450],['“69”',300]
+            ]},
+            { id: 'licor', g: 'cocktails', gName: 'Cocktails & Shots', n: 'Licores', items: [
+                ['Kahlúa',150],['Beirão',200],['Ferreira Porto (cálice)',400],['Malibu',150],['Amarula',150],['Passion Fruit',100]
+            ]},
+            { id: 'simples', g: 'cocktails', gName: 'Cocktails & Shots', n: 'Destilados (dose simples)', items: [
+                ['Rum Bacardi (branco/preto/gold)',150,'Indique a cor nas observações'],
+                ['Rum Captain Morgan',150],['Rum Spiced Gold',150],
+                ['Aguardente São Domingos',150],['Aguardente 1920',150],['Aguardente CRF',175],
+                ['Whisky JW Black Label',250],['Whisky Glenfiddich 12Y',200],['Whisky Glenfiddich 15Y',300],
+                ['Whisky Glenfiddich 18Y',400],['Whisky Jameson Irish',200],['Whisky Jameson IPA',200],
+                ['Cognac Hennessy VS',300],['Cognac Hennessy VSOP',400],
+                ['Vodka Absolut',150],['Chivas',250],
+                ['Gin Gordon\'s',150],['Gin Tanqueray Dry',200],['Gin Beefeater Pink',200]
+            ]},
+
+            /* ---------- GARRAFAS ---------- */
+            { id: 'espumantes', g: 'garrafas', gName: 'Garrafas', n: 'Champanhe e Espumantes', items: [
+                ['JC Le Roux (lata)',200],['JC Le Roux (garrafa)',1200],['Tosti Moscato',1700],['Nua Moscato',1700],
+                ['Moët Nectar',9000],['Veuve Clicquot Rich',10000],
+                ['Chandor s/ Álcool Branco',1100],['JC Le Roux s/ Álcool',1200],['Anabela s/ Álcool',1200]
+            ]},
+            { id: 'vinhos-brancos', g: 'garrafas', gName: 'Garrafas', n: 'Vinhos Brancos', items: [
+                ['Quinta da Bolota Blanc',1600],['Segredos de São Miguel Blanc',2500],['Fat Bastard Blanc',2000],
+                ['Gatão',1500],['Casal Garcia',1500]
+            ]},
+            { id: 'vinhos-tintos', g: 'garrafas', gName: 'Garrafas', n: 'Vinhos Tintos', items: [
+                ['Cabriz Tinto',1500],['Silk e Spice',2000],['Mucho Más',2100],['Terra Linda',2000],
+                ['Quinta da Bolota',1500],['Quinta da Bolota Prestige',1800],['Portada',1500],['D. Ermelinda',2100],
+                ['Fat Bastard Chardonnay',2000],['Fat Bastard Cabernet Sauvignon',2100]
+            ]},
+            { id: 'reservas', g: 'garrafas', gName: 'Garrafas', n: 'Reservas', items: [
+                ['D. Ermelinda Reserva',2700],['Stellenbosch Reserva',2700],['Fat Bastard Reserva',2700],['Cabriz Reserva',2700]
+            ]},
+            { id: 'garrafa-fortes', g: 'garrafas', gName: 'Garrafas', n: 'Cognac, Tequila, Whisky e Gin (garrafa)', items: [
+                ['Cognac Hennessy V.S.O.P (garrafa)',7500],['Cognac Hennessy V.S (garrafa)',5500],
+                ['Tequila Olmeca Gold (garrafa)',2800],['Tequila Olmeca Chocolate (garrafa)',2800],['Tequila Olmeca Silver (garrafa)',2800],
+                ['Whisky JW Black Label (garrafa)',3200],['Whisky JW Double Black (garrafa)',5000],
+                ['Whisky Glenfiddich 12Y (garrafa)',5000],['Whisky Glenfiddich 15Y (garrafa)',6000],['Whisky Glenfiddich 18Y (garrafa)',8500],
+                ['Whisky Jameson Irish (garrafa)',2800],['Whisky Jameson IPA (garrafa)',3200],['Whisky Jameson Black Barrel (garrafa)',5000],
+                ['Gin Beefeater Dry (garrafa)',2500],['Gin Beefeater Pink (garrafa)',3000],['Gin Tanqueray Dry (garrafa)',3000],
+                ['Gin Tanqueray N.10 (garrafa)',5000],['Gin Tanqueray Royale (garrafa)',3500]
+            ]},
+
+            /* ---------- SOBREMESAS ---------- */
+            { id: 'sobremesa', g: 'sobremesas', gName: 'Sobremesas', n: 'Sobremesas', items: [
+                ['Pudim',290],['Bolo de Chocolate',250],['Cheesecake',320]
+            ]},
+            { id: 'milkshakes', g: 'sobremesas', gName: 'Sobremesas', n: 'Milkshakes', items: [
+                ['Milkshake à Sweet Place',450,'190g sorvete de vanila, 75g bolacha Oreo, 75g morango, 80ml leite'],
+                ['Milkshake de Chocolate',350,'190g sorvete de chocolate, 75g Nutella, 80ml leite'],
+                ['Milkshake de Oreo',350,'190g sorvete de vanila, 125g bolacha Oreo, 80ml leite'],
+                ['Milkshake de Morango',300,'190g sorvete de vanila, 130g morango fresco, 80ml leite'],
+                ['Milkshake de Maracujá',350,'190g sorvete de vanila, 100g maracujá, 80ml leite']
+            ]},
+            { id: 'sorvetes', g: 'sobremesas', gName: 'Sobremesas', n: 'Sorvetes', items: [
+                ['Cone Simples',75],['Copo 175ml',100],['Copo 250ml',150],['Copo 350ml',220],
+                ['Big Deal',200],['Magnum',250],['Nice Nilla',150],['Sweet Heart',75],
+                ['Fusion',75],['Grape',75],['Hi Boy',75],['Cone Vanila / Chocolate',250,'Escolha o sabor nas observações'],
+                ['Fruit Juice',75],['Choc-Lina',75],['Lemon e Lima',75],['Choco25',150]
+            ]}
+        ];
+
+        // Constrói PRODUCTS_DATABASE no shape esperado pela UI (+ subCategory e note)
+        const PRODUCTS_DATABASE = [];
+        MENU_REAL.forEach(c => c.items.forEach((it, i) => PRODUCTS_DATABASE.push({
+            id: c.id + '_' + i,
+            categoryId: c.g,
+            categoryName: c.gName,
+            subCategory: c.n,
+            name: it[0],
+            price: it[1],
+            description: it[2] || `${it[0]} — ${c.n}, servido no Sweet Place Café & Bar.`,
+            note: c.nota || '',
+            image: SUBCATEGORY_IMAGES[c.id]
+        })));
+
+        // Categories Configuration
+        const CATEGORIES = [
+            { id: 'todos', name: 'Todos', icon: 'fa-border-all' },
+            { id: 'comida', name: 'Comida', icon: 'fa-utensils' },
+            { id: 'bebidas', name: 'Bebidas', icon: 'fa-mug-hot' },
+            { id: 'cocktails', name: 'Cocktails & Shots', icon: 'fa-glass-martini-alt' },
+            { id: 'garrafas', name: 'Garrafas', icon: 'fa-wine-bottle' },
+            { id: 'sobremesas', name: 'Sobremesas', icon: 'fa-ice-cream' }
+        ];
+
+        /* ==========================================================================
+           STATE MANAGEMENT
+           ========================================================================== */
+        let activeCategory = 'todos';
+        let currentOrderType = 'dine-in'; // 'dine-in' or 'takeaway'
+        let cart = [];
+        let selectedProductForModal = null;
+        let currentModalQty = 1;
+        let myOrdersHistory = JSON.parse(localStorage.getItem('sweet_place_orders') || '[]');
+
+        /* ==========================================================================
+           INITIALIZATION & RENDERING
+           ========================================================================== */
+        window.onload = function() {
+            renderCategories();
+            renderProducts();
+            updateCartSummary();
+        };
+
+        function setOrderType(type) {
+            currentOrderType = type;
+            const badge = document.getElementById('dining-type-badge');
+            const tableContainer = document.getElementById('table-number-container');
+            
+            if (type === 'dine-in') {
+                badge.innerHTML = `<i class="fa-solid fa-utensils text-brand-gold"></i> Comer Aqui`;
+                tableContainer.classList.remove('hidden');
+            } else {
+                badge.innerHTML = `<i class="fa-solid fa-bag-shopping text-brand-gold"></i> Para Levar`;
+                tableContainer.classList.add('hidden');
+            }
+
+            document.getElementById('welcome-modal').classList.add('opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                document.getElementById('welcome-modal').classList.add('hidden');
+            }, 300);
+        }
+
+        function renderCategories() {
+            const container = document.getElementById('categories-container');
+            container.innerHTML = CATEGORIES.map(cat => {
+                const isActive = activeCategory === cat.id;
+                return `
+                    <button onclick="selectCategory('${cat.id}')" 
+                            class="px-4 py-2 rounded-full text-xs font-semibold whitespace-nowrap transition-all duration-200 flex items-center gap-2 ${
+                                isActive 
+                                ? 'bg-brand-red text-white shadow-md shadow-brand-red/30' 
+                                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                            }">
+                        <i class="fa-solid ${cat.icon}"></i>
+                        <span>${cat.name}</span>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function selectCategory(catId) {
+            activeCategory = catId;
+            renderCategories();
+            renderProducts();
+        }
+
+        // Agrupa uma lista de produtos por subcategoria, preservando a ordem do menu
+        function groupBySubCategory(items) {
+            const map = {}, order = [];
+            items.forEach(p => {
+                if (!map[p.subCategory]) { map[p.subCategory] = []; order.push(p.subCategory); }
+                map[p.subCategory].push(p);
+            });
+            return order.map(name => ({ name, items: map[name], note: map[name][0].note }));
+        }
+
+        function renderProducts() {
+            const container = document.getElementById('products-section');
+            const searchQuery = document.getElementById('search-input').value.toLowerCase().trim();
+
+            let filtered = PRODUCTS_DATABASE.filter(prod => {
+                const matchesCategory = activeCategory === 'todos' || prod.categoryId === activeCategory;
+                const matchesSearch = prod.name.toLowerCase().includes(searchQuery)
+                    || prod.description.toLowerCase().includes(searchQuery)
+                    || prod.subCategory.toLowerCase().includes(searchQuery);
+                return matchesCategory && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <i class="fa-solid fa-utensils text-gray-300 text-5xl mb-3"></i>
+                        <p class="text-gray-500 font-medium text-sm">Nenhum produto encontrado.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const cardsHTML = items => `
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    ${items.map(item => createProductCardHTML(item)).join('')}
+                </div>`;
+
+            const noteHTML = note => note ? `
+                <p class="text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-1.5 mt-1 flex items-center gap-1.5">
+                    <i class="fa-solid fa-circle-info"></i><span>${note}</span>
+                </p>` : '';
+
+            // Busca ativa: grelha plana com todos os resultados
+            if (searchQuery) {
+                container.innerHTML = cardsHTML(filtered);
+                return;
+            }
+
+            let html = '';
+
+            if (activeCategory === 'todos') {
+                // Vista "Todos": secção por categoria com sub-títulos por subcategoria
+                CATEGORIES.filter(c => c.id !== 'todos').forEach(cat => {
+                    const items = filtered.filter(p => p.categoryId === cat.id);
+                    if (!items.length) return;
+                    html += `
+                        <div class="space-y-5">
+                            <h2 class="text-lg font-bold text-gray-900 border-l-4 border-brand-red pl-3 flex items-center justify-between">
+                                <span>${cat.name}</span>
+                                <span class="text-xs font-normal text-gray-400">${items.length} itens</span>
+                            </h2>
+                            ${groupBySubCategory(items).map(sub => `
+                                <div class="pt-1">
+                                    <h3 class="text-sm font-bold text-gray-800 border-l-2 border-brand-gold pl-2.5 flex items-center justify-between mb-3">
+                                        <span>${sub.name}</span>
+                                        <span class="text-xs font-normal text-gray-400">${sub.items.length} itens</span>
+                                    </h3>
+                                    ${noteHTML(sub.note)}
+                                    ${cardsHTML(sub.items)}
+                                </div>
+                            `).join('')}
+                        </div>`;
+                });
+            } else {
+                // Categoria selecionada: subcategorias como títulos principais
+                html = groupBySubCategory(filtered).map(sub => `
+                    <div class="space-y-4">
+                        <h2 class="text-lg font-bold text-gray-900 border-l-4 border-brand-red pl-3 flex items-center justify-between">
+                            <span>${sub.name}</span>
+                            <span class="text-xs font-normal text-gray-400">${sub.items.length} itens</span>
+                        </h2>
+                        ${noteHTML(sub.note)}
+                        ${cardsHTML(sub.items)}
+                    </div>`).join('');
+            }
+
+            container.innerHTML = `<div class="space-y-10">${html}</div>`;
+        }
+
+        function createProductCardHTML(product) {
+            return `
+                <div onclick="openProductModal('${product.id}')" class="bg-white rounded-2xl p-3 border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer flex gap-3.5 group">
+                    <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-xl overflow-hidden bg-gray-100 relative shrink-0">
+                        <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-300" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=80'">
+                    </div>
+                    <div class="flex flex-col justify-between flex-1 py-0.5">
+                        <div>
+                            <h3 class="font-bold text-gray-900 text-sm leading-snug group-hover:text-brand-red transition">${product.name}</h3>
+                            <p class="text-gray-500 text-xs line-clamp-2 mt-1 leading-normal">${product.description}</p>
+                        </div>
+                        <div class="flex items-center justify-between mt-2">
+                            <span class="font-extrabold text-brand-red text-base">${product.price} MT</span>
+                            <button class="w-8 h-8 bg-red-50 text-brand-red rounded-lg flex items-center justify-center font-bold group-hover:bg-brand-red group-hover:text-white transition">
+                                <i class="fa-solid fa-plus text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        /* ==========================================================================
+           SEARCH FILTER
+           ========================================================================== */
+        function filterProducts() {
+            const query = document.getElementById('search-input').value.trim();
+            const clearBtn = document.getElementById('clear-search');
+            if (query.length > 0) {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+            }
+            renderProducts();
+        }
+
+        function clearSearch() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('clear-search').classList.add('hidden');
+            renderProducts();
+        }
+
+        /* ==========================================================================
+           PRODUCT DETAIL MODAL LOGIC
+           ========================================================================== */
+        function openProductModal(productId) {
+            const product = PRODUCTS_DATABASE.find(p => p.id === productId);
+            if (!product) return;
+
+            selectedProductForModal = product;
+            currentModalQty = 1;
+
+            document.getElementById('modal-product-img').src = product.image;
+            document.getElementById('modal-product-title').innerText = product.name;
+            document.getElementById('modal-product-price').innerText = product.price + ' MT';
+            document.getElementById('modal-product-desc').innerText = product.description;
+            document.getElementById('modal-product-category').innerText = product.categoryName;
+            document.getElementById('modal-product-obs').value = '';
+            
+            updateModalPriceDisplay();
+
+            document.getElementById('product-modal').classList.remove('hidden');
+        }
+
+        function closeProductModal() {
+            document.getElementById('product-modal').classList.add('hidden');
+            selectedProductForModal = null;
+        }
+
+        function changeModalQty(delta) {
+            currentModalQty = Math.max(1, currentModalQty + delta);
+            updateModalPriceDisplay();
+        }
+
+        function updateModalPriceDisplay() {
+            document.getElementById('modal-qty').innerText = currentModalQty;
+            if (selectedProductForModal) {
+                const total = selectedProductForModal.price * currentModalQty;
+                document.getElementById('modal-total-btn-price').innerText = total + ' MT';
+            }
+        }
+
+        function addCurrentProductToCart() {
+            if (!selectedProductForModal) return;
+
+            const obs = document.getElementById('modal-product-obs').value.trim();
+            const existingIndex = cart.findIndex(item => item.product.id === selectedProductForModal.id && item.obs === obs);
+
+            if (existingIndex > -1) {
+                cart[existingIndex].quantity += currentModalQty;
+            } else {
+                cart.push({
+                    product: selectedProductForModal,
+                    quantity: currentModalQty,
+                    obs: obs
+                });
+            }
+
+            closeProductModal();
+            updateCartSummary();
+        }
+
+        /* ==========================================================================
+           CART DRAWER & STATE
+           ========================================================================== */
+        function updateCartSummary() {
+            const totalCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const totalPrice = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+
+            document.getElementById('cart-badge-count').innerText = totalCount;
+            document.getElementById('cart-summary-items').innerText = `${totalCount} ${totalCount === 1 ? 'item' : 'itens'} selecionados`;
+            document.getElementById('cart-summary-total').innerText = totalPrice + ' MT';
+
+            document.getElementById('drawer-subtotal').innerText = totalPrice + ' MT';
+            document.getElementById('drawer-total').innerText = totalPrice + ' MT';
+
+            renderCartDrawerItems();
+        }
+
+        function openCartDrawer() {
+            if (cart.length === 0) {
+                alert("Sua sacola está vazia. Adicione alguns pratos ou bebidas primeiro!");
+                return;
+            }
+            document.getElementById('cart-drawer').classList.remove('hidden');
+        }
+
+        function closeCartDrawer() {
+            document.getElementById('cart-drawer').classList.add('hidden');
+        }
+
+        function renderCartDrawerItems() {
+            const container = document.getElementById('cart-drawer-items');
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-10 text-gray-400">
+                        <i class="fa-solid fa-basket-shopping text-4xl mb-2"></i>
+                        <p class="text-sm">A sua sacola está vazia.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = cart.map((item, index) => `
+                <div class="py-3 flex items-center justify-between gap-3">
+                    <img src="${item.product.image}" class="w-14 h-14 rounded-xl object-cover shrink-0">
+                    <div class="flex-1 min-w-0">
+                        <h4 class="font-bold text-gray-900 text-xs truncate">${item.product.name}</h4>
+                        <p class="text-brand-red font-semibold text-xs">${item.product.price} MT</p>
+                        ${item.obs ? `<p class="text-[10px] text-gray-500 italic truncate">Obs: ${item.obs}</p>` : ''}
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="flex items-center border border-gray-200 rounded-lg bg-gray-50">
+                            <button onclick="updateCartItemQty(${index}, -1)" class="w-6 h-6 text-xs text-gray-600 font-bold hover:bg-gray-200 rounded-l">-</button>
+                            <span class="w-6 text-center text-xs font-bold text-gray-800">${item.quantity}</span>
+                            <button onclick="updateCartItemQty(${index}, 1)" class="w-6 h-6 text-xs text-gray-600 font-bold hover:bg-gray-200 rounded-r">+</button>
+                        </div>
+                        <button onclick="removeCartItem(${index})" class="text-gray-400 hover:text-red-500 text-xs p-1">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateCartItemQty(index, delta) {
+            if (cart[index]) {
+                cart[index].quantity += delta;
+                if (cart[index].quantity <= 0) {
+                    cart.splice(index, 1);
+                }
+                updateCartSummary();
+            }
+        }
+
+        function removeCartItem(index) {
+            cart.splice(index, 1);
+            updateCartSummary();
+            if (cart.length === 0) {
+                closeCartDrawer();
+            }
+        }
+
+        /* ==========================================================================
+           WHATSAPP SUBMISSION & MEUS PEDIDOS
+           ========================================================================== */
+        function submitOrderToWhatsApp() {
+            const name = document.getElementById('customer-name').value.trim();
+            const table = document.getElementById('customer-table').value.trim();
+            const notes = document.getElementById('order-notes').value.trim();
+
+            if (!name) {
+                alert("Por favor, preencha o seu nome.");
+                return;
+            }
+
+            if (currentOrderType === 'dine-in' && !table) {
+                alert("Por favor, informe o número da sua mesa.");
+                return;
+            }
+
+            if (cart.length === 0) {
+                alert("A sua sacola está vazia.");
+                return;
+            }
+
+            const totalPrice = cart.reduce((sum, item) => sum + (item.product.price * item.quantity), 0);
+            const orderId = '#' + Math.floor(1000 + Math.random() * 9000);
+
+            let message = `*NOVO PEDIDO - SWEET PLACE* 🍹🍽️\n`;
+            message += `*Pedido:* ${orderId}\n`;
+            message += `*Cliente:* ${name}\n`;
+            message += `*Tipo:* ${currentOrderType === 'dine-in' ? `Comer Aqui (Mesa ${table})` : 'Para Levar (Retirada)'}\n`;
+            message += `-----------------------------------\n`;
+            message += `*ITENS DO PEDIDO:*\n`;
+
+            cart.forEach(item => {
+                message += `• ${item.quantity}x ${item.product.name} - ${item.product.price * item.quantity} MT\n`;
+                if (item.obs) {
+                    message += `   _Obs: ${item.obs}_\n`;
+                }
+            });
+
+            message += `-----------------------------------\n`;
+            if (notes) {
+                message += `*Observação Geral:* ${notes}\n`;
+            }
+            message += `*TOTAL:* *${totalPrice} MT*\n\n`;
+            message += `Obrigado por escolher o Sweet Place!`;
+
+            // Save order locally for history tracking
+            const newOrderRecord = {
+                id: orderId,
+                date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                items: [...cart],
+                total: totalPrice,
+                type: currentOrderType === 'dine-in' ? `Mesa ${table}` : 'Para Levar',
+                status: 'Em Preparo'
+            };
+
+            myOrdersHistory.unshift(newOrderRecord);
+            localStorage.setItem('sweet_place_orders', JSON.stringify(myOrdersHistory));
+
+            // Reset cart
+            cart = [];
+            updateCartSummary();
+            closeCartDrawer();
+
+            // WhatsApp Redirect
+            const phoneNumber = "258878390030";
+            const encodedUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+            window.open(encodedUrl, '_blank');
+        }
+
+        function toggleOrdersModal() {
+            const modal = document.getElementById('orders-modal');
+            const container = document.getElementById('orders-list-container');
+
+            if (modal.classList.contains('hidden')) {
+                if (myOrdersHistory.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-10 text-gray-400">
+                            <i class="fa-solid fa-receipt text-4xl mb-2"></i>
+                            <p class="text-sm">Nenhum pedido realizado recentemente.</p>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = myOrdersHistory.map(ord => `
+                        <div class="bg-gray-50 border border-gray-200 rounded-2xl p-4 space-y-2">
+                            <div class="flex items-center justify-between border-b border-gray-200 pb-2">
+                                <div>
+                                    <span class="font-extrabold text-gray-900 text-sm">${ord.id}</span>
+                                    <span class="text-xs text-gray-400 ml-2">${ord.date}</span>
+                                </div>
+                                <span class="px-2.5 py-0.5 text-[10px] font-bold uppercase rounded-full bg-amber-100 text-amber-700">
+                                    ${ord.status}
+                                </span>
+                            </div>
+                            <div class="text-xs space-y-1 text-gray-600">
+                                ${ord.items.map(i => `<div>• ${i.quantity}x ${i.product.name}</div>`).join('')}
+                            </div>
+                            <div class="flex justify-between items-center pt-2 border-t border-gray-200 font-bold text-xs">
+                                <span class="text-gray-500">${ord.type}</span>
+                                <span class="text-brand-red text-sm">${ord.total} MT</span>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>

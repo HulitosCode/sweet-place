@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sweet Place — Menu Digital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#fff;--card:#fff;--ink:#323232;--mut:#7e8392;--line:#ececec;--tile:#f4f4f4;--soft:#f3f3f3;--out:#efefef;
+  --red:#d62d20;--amber:#ffb100;--green:#17b26a;--shadow:0 8px 30px rgba(0,0,0,.12);
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141414;--card:#1c1c1c;--ink:#f2f2f2;--mut:#a3a8b5;--line:#2d2d2d;--tile:#262626;--soft:#2a2a2a;--out:#000;--shadow:0 8px 30px rgba(0,0,0,.6)}}
+:root[data-theme="dark"]{--bg:#141414;--card:#1c1c1c;--ink:#f2f2f2;--mut:#a3a8b5;--line:#2d2d2d;--tile:#262626;--soft:#2a2a2a;--out:#000;--shadow:0 8px 30px rgba(0,0,0,.6)}
+html{height:100%}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--out);color:var(--ink);font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:14px;line-height:1.45;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0}
+input,textarea{font:inherit;color:var(--ink)}
+:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+svg{display:block}
+#app{max-width:960px;margin:0 auto;background:var(--bg);min-height:100vh;position:relative;overflow-x:hidden}
+@media(min-width:768px){#app{box-shadow:var(--shadow)}}
+.screen{display:none;min-height:100vh}
+.screen.on{display:block}
+.ic{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.icbtn{position:absolute;top:16px;width:40px;height:40px;border-radius:50%;background:#fff;color:#323232;display:grid;place-items:center;z-index:3;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.icbtn.l{left:20px}.icbtn.r{right:20px}
+.icbtn.gray{background:var(--soft);color:var(--ink);box-shadow:none}
+
+/* 1. Tela inicial */
+#s-home{padding:70px 24px 40px;text-align:center}
+.logo{width:164px;height:164px;border-radius:20px;background:var(--red);display:grid;place-items:center;margin:0 auto;color:var(--amber);font-size:110px;font-weight:700;line-height:1}
+.brand{font-size:22px;font-weight:600;margin:14px 0 0}
+#s-home h2{font-size:30px;font-weight:600;margin:90px 0 12px}
+#s-home p{color:var(--mut);font-size:16px;max-width:520px;margin:0 auto}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:640px;margin:56px auto 0}
+.opt{border:1px solid var(--line);background:var(--card);border-radius:24px;padding:36px 16px 22px;display:flex;flex-direction:column;align-items:center;gap:30px;transition:transform .15s}
+.opt:active{transform:scale(.97)}
+.opt svg{width:104px;height:104px}
+.opt span{display:block;width:100%;padding:13px 8px;border-radius:999px;background:var(--soft);font-weight:600;font-size:15px}
+
+/* 2. Restaurante */
+.banner{height:200px;background:linear-gradient(135deg,#e53a2c,#8d130b);display:flex;align-items:center;justify-content:space-around;overflow:hidden;position:relative}
+.banner svg{width:96px;height:96px;flex:0 0 auto;filter:drop-shadow(0 6px 8px rgba(0,0,0,.35))}
+@media(min-width:768px){.banner{height:260px}.banner svg{width:130px;height:130px}}
+.sheetcard{margin-top:-24px;position:relative;z-index:2;background:var(--bg);border-radius:24px 24px 0 0;padding:20px 20px 130px}
+.rhead{display:flex;align-items:center;gap:14px}
+.rlogo{width:46px;height:46px;border-radius:8px;background:var(--red);color:var(--amber);display:grid;place-items:center;font-size:30px;font-weight:700;line-height:1;flex:0 0 auto}
+.rhead h1{font-size:20px;font-weight:600;margin:0;line-height:1.2}
+.rhead small{color:var(--mut);font-size:13px}
+.status{display:flex;align-items:center;gap:6px;color:var(--green);font-size:13px;margin-top:14px}
+.status .ic{width:18px;height:18px}
+.hr{border-top:1px solid var(--line);margin:16px -20px}
+.search{width:100%;padding:11px 18px;border:1px solid var(--line);border-radius:999px;background:var(--bg);margin-bottom:14px;font-size:14px}
+.search::placeholder{color:var(--mut)}
+.chips{display:flex;gap:8px;overflow-x:auto;margin:0 -20px;padding:0 20px 16px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;padding:8px 16px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--mut);font-size:12.5px;font-weight:500;white-space:nowrap}
+.chip.on{background:var(--amber);border-color:var(--amber);color:#fff;font-weight:600}
+.title{font-size:16px;font-weight:600;margin:6px 0 4px}
+.plist{display:grid;grid-template-columns:1fr}
+@media(min-width:768px){.plist{grid-template-columns:1fr 1fr;column-gap:36px}}
+.p{display:flex;justify-content:space-between;align-items:center;gap:16px;width:100%;text-align:left;border-bottom:1px solid var(--line);padding:18px 0}
+.p h3{margin:0;font-size:14px;font-weight:500}
+.p p{margin:4px 0 8px;color:var(--mut);font-size:13px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.p b{font-size:14px;font-weight:600}
+.pimg{flex:0 0 80px;width:80px;height:80px;border-radius:10px;overflow:hidden;background:var(--tile)}
+.pimg svg{width:100%;height:100%}
+.empty{text-align:center;color:var(--mut);padding:40px 10px}
+
+/* Barras inferiores */
+.bar{position:fixed;left:0;right:0;bottom:0;z-index:30;display:none;background:var(--bg);border-top:1px solid var(--line);padding:14px 20px calc(14px + env(safe-area-inset-bottom,0px))}
+.bar.on{display:block}
+.bar .in{max-width:960px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.bar small{display:block;color:var(--mut);font-size:12px}
+.bar strong{font-size:18px;font-weight:600}.bar strong i{font-style:normal;font-size:12px;font-weight:400;color:var(--mut)}
+.btn{border-radius:10px;padding:14px 30px;font-weight:600;font-size:14px;color:#fff;background:var(--red)}
+.btn.amber{background:var(--amber)}
+.btn.block{width:100%;border-radius:999px;padding:15px}
+.btn:disabled{opacity:.5}
+
+/* 3. Produto */
+.ptop{background:var(--tile);height:310px;display:grid;place-items:center;position:relative}
+.ptop svg{width:min(280px,72%);height:auto;border-radius:18px}
+.pbody{background:var(--bg);border-radius:24px 24px 0 0;margin-top:-24px;position:relative;z-index:2;padding:20px 20px 130px}
+.mini{display:flex;align-items:center;gap:8px;color:var(--mut);font-size:12.5px}
+.mini i{width:18px;height:18px;border-radius:50%;background:var(--red);color:var(--amber);display:grid;place-items:center;font-style:normal;font-weight:700;font-size:11px}
+.pbody h1{font-size:19px;font-weight:600;margin:4px 0 14px}
+.prow{display:flex;align-items:center;justify-content:space-between}
+.prow strong{font-size:22px;font-weight:700}
+.stepper{display:inline-flex;align-items:center;gap:12px}
+.sb{width:34px;height:34px;border-radius:10px;border:1px solid var(--line);background:var(--bg);display:grid;place-items:center}
+.sb.red{background:var(--red);border-color:var(--red);color:#fff}
+.sb .ic{width:16px;height:16px}
+.stepper span{min-width:14px;text-align:center;font-size:13px}
+.sec{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600;margin:26px 0 8px}
+.sec .ic{width:18px;height:18px}
+.about{color:var(--mut);margin:0;line-height:1.65}
+.ing{color:var(--mut);margin:0;padding-left:20px;line-height:1.9}
+@media(min-width:768px){
+  .prod{display:grid;grid-template-columns:1fr 1fr;min-height:100vh}
+  .ptop{height:auto;min-height:100vh}.ptop svg{width:min(360px,80%)}
+  .pbody{margin-top:0;border-radius:0;padding:70px 40px 130px}
+}
+
+/* Sacola */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .25s;z-index:50}
+.ov.on{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(100%,420px);background:var(--bg);z-index:60;transform:translateX(100%);transition:transform .28s ease;display:flex;flex-direction:column;padding:calc(22px + env(safe-area-inset-top,0px)) 20px calc(20px + env(safe-area-inset-bottom,0px))}
+.drawer.on{transform:none}
+.dh{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.dh h3{margin:0;font-size:18px;font-weight:600}
+.lines{flex:1;overflow-y:auto}
+.ln{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.ln .pimg{flex:0 0 78px;width:78px;height:78px}
+.ln .mid{flex:1;min-width:0}
+.ln .mid h4{margin:0;font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ln .mid b{display:block;font-size:14px;font-weight:600;margin:2px 0 6px}
+.sum{border:1px solid var(--line);border-radius:14px;padding:6px 18px;margin:10px 0 18px}
+.sum div{display:flex;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--line);font-size:13px;color:var(--mut)}
+.sum div:last-child{border:0;color:var(--ink);font-weight:600;font-size:14px}
+
+/* Modais */
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;place-items:center;z-index:70;padding:20px}
+.modal.on{display:grid}
+.mbox{background:var(--bg);width:min(100%,380px);max-height:92vh;overflow-y:auto;border-radius:20px;padding:24px;text-align:center}
+.mbox h3{margin:0 0 6px;font-size:18px;font-weight:600}
+.mbox>p{margin:0 0 16px;color:var(--mut);font-size:14px}
+.fld{display:block;text-align:left;font-size:14px;font-weight:600;margin:12px 0 6px}
+.fld+input,.fld+textarea,.inp{width:100%;border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:14px 18px;font-size:14px}
+.fld+textarea{border-radius:18px;resize:none}
+.err{color:var(--red);font-size:12.5px;min-height:18px;margin:8px 0 0;text-align:left}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.two .btn{border-radius:999px}
+.btn.gray{background:var(--soft);color:var(--ink)}
+.okic{width:64px;height:64px;border-radius:50%;background:var(--red);color:#fff;display:grid;place-items:center;margin:4px auto 16px}
+.okic .ic{width:30px;height:30px;stroke-width:3}
+.lnk{color:var(--red);font-weight:600}
+
+/* 4. Pedidos */
+#s-orders{padding:20px}
+.oh{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
+.oh .icbtn{position:static}
+.ot{display:flex;align-items:center;gap:10px;font-size:18px;font-weight:600;margin:0 0 18px}
+.oc{border:1px solid var(--line);background:var(--card);border-radius:12px;padding:20px;margin-bottom:14px}
+.orow{display:flex;justify-content:space-between;align-items:center}
+.badge{display:inline-block;padding:3px 12px;border-radius:999px;font-size:12px;font-weight:600}
+.badge.prep{background:rgba(255,177,0,.16);color:#e29b00}
+.badge.done{background:#5cb85c;color:#fff}
+.oc .who{display:flex;align-items:center;gap:8px;font-weight:600;margin:12px 0}
+.oc .who i{width:20px;height:20px;border-radius:4px;background:var(--red);color:var(--amber);display:grid;place-items:center;font-style:normal;font-size:13px;font-weight:700}
+.oc .its{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:12px 0;font-size:13px}
+.oc .its div{display:flex;align-items:center;gap:8px;padding:3px 0}
+.oc .its em{width:20px;height:20px;border-radius:50%;background:#7e8392;color:#fff;font-style:normal;font-size:11px;display:grid;place-items:center;flex:0 0 auto}
+.oc .foot{display:flex;justify-content:space-between;align-items:center;margin-top:14px;font-size:13px}
+.oc .re{font-weight:600;color:var(--red);font-size:13px}
+.oc .re:disabled{opacity:.4}
+.oc .fin{font-size:12px;color:var(--mut);text-decoration:underline}
+@media(min-width:768px){#s-orders{padding:30px 40px}}
+
+.toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%);z-index:90;background:#323232;color:#fff;padding:10px 18px;border-radius:999px;font-size:13px;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.on{opacity:1}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- 1. TELA INICIAL -->
+  <section class="screen on" id="s-home">
+    <div class="logo" aria-hidden="true">S</div>
+    <p class="brand">Sweet Place</p>
+    <h2>Seja bem-vindo!</h2>
+    <p>Escolha como prefere aproveitar a sua refeição. Estamos aqui para oferecer praticidade e sabor em cada detalhe!</p>
+    <div class="cards">
+      <button class="opt" data-type="aqui"><div id="homeBurger"></div><span>Para comer aqui</span></button>
+      <button class="opt" data-type="levar">
+        <svg viewBox="0 0 80 80" aria-hidden="true"><path d="M17 28l8-11h32l6 11v44l-2 4H19l-2-4z" fill="#cc925c" stroke="#3b2214" stroke-width="2.5" stroke-linejoin="round"/><path d="M63 28l-8 7v40l8-3z" fill="#a8723f" stroke="#3b2214" stroke-width="2.5" stroke-linejoin="round"/><path d="M17 36l30 3" stroke="#3b2214" stroke-width="2" fill="none"/><path d="M24 17c0-6 6-9 14-9h16c4 0 6 3 4 6l-4 3" fill="#cc925c" stroke="#3b2214" stroke-width="2.5" stroke-linejoin="round"/></svg>
+        <span>Para levar</span></button>
+    </div>
+  </section>
+
+  <!-- 2. RESTAURANTE -->
+  <section class="screen" id="s-rest">
+    <div class="banner" id="banner" aria-hidden="true"></div>
+    <button class="icbtn l" data-back aria-label="Voltar"><svg class="ic" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <button class="icbtn r" data-orders aria-label="Meus pedidos"><svg class="ic" viewBox="0 0 24 24"><path d="M9 4h9a2 2 0 0 1 2 2v11a3 3 0 0 1-3 3H6a3 3 0 0 0 3-3V4z"/><path d="M9 4H7a2 2 0 0 0-2 2v2h4"/><path d="M12 9h5M12 13h5"/></svg></button>
+    <div class="sheetcard">
+      <div class="rhead"><div class="rlogo">S</div><div><h1>Sweet Place</h1><small>Café &amp; Bar</small></div></div>
+      <div class="status"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span id="typeLbl">Para comer aqui</span></div>
+      <div class="hr"></div>
+      <input class="search" id="q" type="search" placeholder="Procurar no menu…" aria-label="Procurar no menu" autocomplete="off">
+      <nav class="chips" id="chips" aria-label="Categorias"></nav>
+      <h2 class="title" id="listTitle"></h2>
+      <div class="plist" id="plist"></div>
+    </div>
+  </section>
+
+  <!-- 3. PRODUTO -->
+  <section class="screen" id="s-prod">
+    <div class="prod">
+      <div class="ptop" id="pTop"></div>
+      <div class="pbody" id="pBody"></div>
+    </div>
+    <button class="icbtn l" data-back aria-label="Voltar"><svg class="ic" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <button class="icbtn r" data-orders aria-label="Meus pedidos"><svg class="ic" viewBox="0 0 24 24"><path d="M9 4h9a2 2 0 0 1 2 2v11a3 3 0 0 1-3 3H6a3 3 0 0 0 3-3V4z"/><path d="M9 4H7a2 2 0 0 0-2 2v2h4"/><path d="M12 9h5M12 13h5"/></svg></button>
+  </section>
+
+  <!-- PEDIDOS -->
+  <section class="screen" id="s-orders">
+    <div class="oh">
+      <button class="icbtn gray" data-back aria-label="Voltar"><svg class="ic" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+    </div>
+    <h2 class="ot"><svg class="ic" viewBox="0 0 24 24"><path d="M9 4h9a2 2 0 0 1 2 2v11a3 3 0 0 1-3 3H6a3 3 0 0 0 3-3V4z"/><path d="M9 4H7a2 2 0 0 0-2 2v2h4"/><path d="M12 9h5M12 13h5"/></svg>Meus Pedidos</h2>
+    <div id="olist"></div>
+  </section>
+</div>
+
+<!-- Barras -->
+<div class="bar" id="barRest"><div class="in">
+  <div><small>Total dos pedidos</small><strong id="bTotal">0,00 MT</strong> <i style="font-style:normal;font-size:12px;color:var(--mut)" id="bCount"></i></div>
+  <button class="btn" id="openBag">Ver Sacola</button></div></div>
+<div class="bar" id="barProd"><div class="in"><button class="btn amber block" id="addBtn">Adicionar à Sacola</button></div></div>
+
+<!-- Sacola -->
+<div class="ov" id="ov"></div>
+<aside class="drawer" id="drawer" aria-label="Sacola">
+  <div class="dh"><h3>Sacola</h3><button data-close aria-label="Fechar"><svg class="ic" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+  <div class="lines" id="lines"></div>
+  <div class="sum"><div><span>Subtotal</span><span id="sSub"></span></div><div><span>Descontos</span><span id="sDesc"></span></div><div><span>Total</span><span id="sTot"></span></div></div>
+  <button class="btn amber block" id="finBtn">Finalizar Pedido</button>
+</aside>
+
+<!-- Dados -->
+<div class="modal" id="mDados"><div class="mbox" role="dialog" aria-labelledby="dT">
+  <h3 id="dT">Quase lá!</h3>
+  <p>Para finalizar o seu pedido, insira os seus dados abaixo.</p>
+  <label class="fld" for="fName">O seu nome</label>
+  <input id="fName" placeholder="Digite o seu nome" maxlength="40" autocomplete="name">
+  <div id="tblWrap"><label class="fld" for="fTable">Número da mesa</label>
+  <input id="fTable" placeholder="Ex: 5" inputmode="numeric" maxlength="10"></div>
+  <label class="fld" for="fObs">Observações (opcional)</label>
+  <textarea id="fObs" rows="2" placeholder="Ex: sem gelo, bem passado…" maxlength="250" class="inp"></textarea>
+  <p class="err" id="err" role="alert"></p>
+  <div class="two"><button class="btn gray" data-close>Cancelar</button><button class="btn" id="sendBtn">Finalizar</button></div>
+</div></div>
+
+<!-- Pedido efetuado -->
+<div class="modal" id="mOk"><div class="mbox" role="dialog" aria-labelledby="oT">
+  <div class="okic"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></div>
+  <h3 id="oT">Pedido Efetuado!</h3>
+  <p>O seu pedido foi aberto no WhatsApp. Toque em “Enviar” na conversa para o Sweet Place o receber.</p>
+  <div class="two"><button class="lnk" id="okOrders">Ver pedidos</button><button class="btn gray" id="okCont">Continuar</button></div>
+</div></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* ================= CONFIGURAÇÃO ================= */
+const WHATSAPP_NUMBER = "258878390030";   // número que recebe os pedidos (formato internacional, sem +)
+const NOME_LOCAL = "Sweet Place Café & Bar";
+
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+const esc = s => String(s).replace(/[&<>"']/g, m => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[m]));
+const fmt = n => n.toLocaleString("pt-PT", { minimumFractionDigits:2, maximumFractionDigits:2 }).replace(/\u00a0/g," ") + " MT";
+const IC = {
+  l:'<svg class="ic" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>',
+  r:'<svg class="ic" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>',
+  t:'<svg class="ic" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg>',
+  chef:'<svg class="ic" viewBox="0 0 24 24"><path d="M7 14a4 4 0 1 1 1-7.8 4 4 0 0 1 8 0A4 4 0 1 1 17 14v5H7z"/><path d="M7 17h10"/></svg>'
+};
+
+/* ================= DADOS DO MENU =================
+   Cada categoria: id, grupo, nome, nota (opcional), itens [nome, preço, descrição?] */
+const GROUPS = ["Comida", "Bebidas", "Cocktails & Shots", "Garrafas", "Sobremesas"];
+
+const MENU = [
+  /* ---------- COMIDA ---------- */
+  { id:"pequeno-almoco", g:"Comida", n:"Pequenos Almoços", items:[
+    ["Pequeno Almoço Simples",350,"2 ovos, 2 torradas, batata frita & salada"],
+    ["Pequeno Almoço à Sweet Place",650,"2 ovos, 2 torradas, batata frita, 2 salsichas, feijão doce, cogumelos, peito de frango grelhado & tomate grelhado"],
+    ["Pequeno Almoço Inglês",590,"2 ovos, 2 torradas, 2 salsichas, feijão doce, tomate grelhado & fiambre"],
+    ["Omolete Simples",200,"Ovo e 2 torradas & manteiguinha"],
+    ["Omolete de Frango",450,"Ovo, 2 torradas, manteiguinha & peito de frango"],
+  ]},
+  { id:"tapas", g:"Comida", n:"Tapas", items:[
+    ["Petisco de Cabrito",400],
+    ["Petisco de Galinha Cafrial",400],
+    ["Petisco de Rabada",550],
+    ["Sopa do Dia",250],
+    ["Pão de Alho com Queijo",180,"Pão, alho, manteiga, salsa e queijo mozzarella"],
+    ["Rissóis (3 un.)",180],
+    ["Chamussas de Carne (3 un.)",180],
+  ]},
+  { id:"tostas", g:"Comida", n:"Tostas e Sandes", items:[
+    ["Tosta de Queijo",200,"2 fatias de pão, queijo e manteiga"],
+    ["Tosta de Fiambre",220,"2 fatias de pão, fiambre e manteiga"],
+    ["Tosta Mista",250,"2 fatias de pão, fiambre, queijo e manteiga"],
+    ["Tosta de Frango",275,"2 fatias de pão, peito de frango, maionese, cebola e manteiga"],
+    ["Prego Simples",250,"Pão e alcatra"],
+    ["Prego Completo",450,"Pão, alcatra, ovo e batata frita"],
+  ]},
+  { id:"hamburgueres", g:"Comida", n:"Hambúrgueres", items:[
+    ["Hambúrguer Simples",200,"Hambúrguer, alface, tomate, cebola, tomate sauce, maionese & pão"],
+    ["Hambúrguer com Queijo",300,"Hambúrguer, queijo, alface, tomate, cebola, tomate sauce, maionese & pão"],
+    ["Hambúrguer com Bacon",375,"Hambúrguer, bacon, alface, tomate, cebola, tomate sauce, maionese & pão"],
+    ["Hambúrguer Completo",450,"Hambúrguer, ovo, queijo, bacon, alface, tomate, cebola, tomate sauce, maionese, batata frita & pão"],
+    ["Hambúrguer à Sweet Place",650,"Hambúrguer duplo, ovo, queijo, bacon, alface, tomate, cebola, tomate sauce, maionese, batata frita & pão"],
+  ]},
+  { id:"saladas", g:"Comida", n:"Saladas", items:[
+    ["Salada de Atum e Ovo",550,"Atum, alface, tomate cereja, cebola roxa, ovo & pimentos"],
+    ["Salada de Frango e Ananás",600,"Alface, pimentos, peito de frango & ananás"],
+  ]},
+  { id:"pizzas", g:"Comida", n:"Pizzas", items:[
+    ["Pizza Margarita",800,"Dough, molho de napolitana, mozarela, orégano, sal"],
+    ["Pizza Mexicana",850,"Dough, molho de napolitana, mozarela, orégano, sal, carne moída, piripiri, pimentos e cebola"],
+    ["Pizza de Chouriço",950,"Dough, molho de napolitana, mozarela, orégano, sal, chouriço, azeitonas laminadas, pimentos"],
+    ["Pizza Vegetariana",1050,"Dough, molho de napolitana, mozarela, orégano, sal, cogumelos, cebola roxa, tomate cereja, espinafre, alcachofras, azeitonas laminadas, pimentos e queijo feta"],
+    ["Pizza de Frango & Cogumelos",950,"Dough, molho de napolitana, mozarela, orégano, sal, cogumelos, peito de frango"],
+    ["Pizza Cubana/Picante",1000,"Molho de tomate, mozzarella, cebola, jalapeño/malagueta, frango & maionese"],
+    ["Pizza Duas Estações",1100,"Metade frango / mexicana"],
+    ["Pizza de Mariscos",1300,"Molho de tomate, mozzarella, cebola, lulas & camarão"],
+    ["Pizza Regina",950,"Dough, molho de napolitana, mozarela, orégano, sal, cogumelos, fiambre"],
+    ["Pizza Tutto",1000,"Dough, molho de napolitana, mozarela, orégano, sal, fiambre, bacon, salame, cogumelos, cebola"],
+    ["Pizza à Sweet Place",1300,"Dough, molho de napolitana, mozarela, orégano, sal, carne moída, peito de frango, cogumelos, babalaza"],
+  ]},
+  { id:"massas", g:"Comida", n:"Massas", items:[
+    ["Bolonhesa Penne",590,"Molho de napolitana, carne moída & queijo parmesão"],
+    ["Fettucine Alfredo",690,"Molho de natas, alho, bacon, fiambre e cogumelos, queijo parmesão"],
+  ]},
+  { id:"aves", g:"Comida", n:"Aves", items:[
+    ["Frango Inteiro Grelhado",850,"Marinado ao molho da casa, com batata frita & salada"],
+    ["Meio Frango Grelhado",450,"Marinado ao molho da casa, com batata frita & salada"],
+    ["Frango Inteiro à Zambeziana",950,"Marinado, com molho de coco, batata frita & salada"],
+    ["Meio Frango à Zambeziana",500,"Marinado, com molho de coco, batata frita & salada"],
+    ["Frango Inteiro à Passarinho",850,"Frito trinchado, com batata frita"],
+    ["Meio Frango à Passarinho",450,"Frito trinchado, com batata frita"],
+    ["Peito de Frango Grelhado",550,"Batata frita & salada"],
+    ["Espetada de Peito de Frango",500,"Batata frita & salada"],
+    ["Cordoniz (3 un.)",650,"Batata frita & salada"],
+  ]},
+  { id:"carnes", g:"Comida", n:"Carne de Vaca", items:[
+    ["Espetada de Carne de Vaca",650],
+    ["T-Bone 500g",1260],
+    ["Babalaza 500g",650,"Servido com batata frita"],
+    ["Worse 500g",780,"Servido com batata frita"],
+  ]},
+  { id:"mariscos", g:"Comida", n:"Mariscos", items:[
+    ["Peixe Vermelho Grelhado",900,"Servido com vegetais, fritas e salada"],
+    ["Lulas Grelhadas",900,"400g de lulas, servido com batata frita e salada"],
+  ]},
+  { id:"sushi", g:"Comida", n:"Sushi", nota:"Preços do sushi lidos de uma foto desfocada — confirme no local.", items:[
+    ["Salmon Rose (3 pcs)",400,"Arroz, peixe, maionese, caviar"],
+    ["California (4 pcs)",450,"Arroz, semente de sésamo, abacate, peixe"],
+    ["Maki (4 pcs)",490,"Arroz, peixe"],
+    ["Caviar Avalanche (4 pcs)",450,"Arroz, caranguejo, alface, abacate, caviar"],
+    ["Sweet Caviar (6 pcs)",950,"Camarão frito, arroz, peixe, caviar"],
+    ["Mista (12 pcs)",1300,"4 de camarão, 4 de salmão, 4 de frutas"],
+    ["Mista (20 pcs)",1900],
+  ]},
+  { id:"extras", g:"Comida", n:"Extras", nota:"Preços dos extras lidos de uma foto desfocada — confirme no local.", items:[
+    ["Extra Mozarela (pizza)",200],
+    ["Extra Spicy Chicken (pizza)",200],
+    ["Extra Cogumelos (pizza)",200],
+    ["Extra Azeitonas Laminadas (pizza)",200],
+    ["Dose de Arroz de Vegetais",200],
+    ["Dose de Batata Frita",200],
+    ["Xima",200],
+  ]},
+
+  /* ---------- BEBIDAS ---------- */
+  { id:"cafetaria", g:"Bebidas", n:"Cafetaria", items:[
+    ["Café Expresso",100],["Café Descafenado",100],["Café Gelado",150],["Chá Diversos",100],
+    ["Chá Descafenado",75],["Galão",150],["Cappuccino com Leite / Creme",150],["Hot Chocolate",150],
+  ]},
+  { id:"refrescos", g:"Bebidas", n:"Refrescos / Mixers", items:[
+    ["Coca-Cola",100],["Coca Zero",100],["Sprite",100],["Fanta Laranja",100],["Fanta Ananás",100],
+    ["Fanta Uva",100],["Sparletta",100],["Crème Soda",100],["Água Tónica",100],["Dry Lemon",100],["Ginger Ale",100],
+  ]},
+  { id:"sumos", g:"Bebidas", n:"Sumos & Água", items:[
+    ["Appletiser (garrafa)",150],
+    ["Grapetiser (garrafa)",150],
+    ["Cappy",130,"Manga, laranja, exótico"],
+    ["Sumo Natural",250,"Laranja, ananás, maracujá, morango, malambe"],
+    ["Sumo Natural Mistura",300],
+    ["Sumo Ceres 1L",200],
+    ["Água Pequena",75],
+    ["Água Grande",120],
+    ["Água das Pedras",200],
+  ]},
+  { id:"draft", g:"Bebidas", n:"Cervejas à Draft", items:[
+    ["Copo Heineken 250ml",130],["Copo Heineken 350ml",160],["Copo Heineken 500ml",220],
+    ["Mafalala Trigo 350ml",175],["Mafalala Lager 350ml",175],["Super Bock 350ml",140],
+    ["Stella 330ml",150],["Castel 350ml",150],
+  ]},
+  { id:"garrafa", g:"Bebidas", n:"Cervejas à Garrafa", items:[
+    ["2M Txoti",110],["Pretinha",110],["Lite Grande",130],["Corona",150],["Stella",150],
+    ["Txilar Mini",110],["Super Bock",130],["Budweiser",130],["Erdinger",170],["Heineken Mini",130],
+  ]},
+  { id:"lata", g:"Bebidas", n:"Cervejas à Lata", items:[
+    ["2M",120],["Impala",120],["Heineken",130],["Heineken 500ml",200],["Castle Lite",150],
+    ["Stella",150],["Mayfair Cereja",140],["Mafalala IPA",170],["Mafalala Trigo",170],["Mafalala Lager",170],
+  ]},
+  { id:"sem-alcool", g:"Bebidas", n:"Cervejas sem Álcool", items:[
+    ["Heineken 0%",120],["Corona 0%",120],["Savanna 0%",130],
+  ]},
+  { id:"cidras", g:"Bebidas", n:"Cidras", items:[
+    ["Hunters Gold",130],["Savanna",130],["Brutal",130],["Brutal Lata",170],["Bernini",140],
+    ["Bernini Morango",140],["Bernini Lata",190],["Flying Fish",150],["Spin",150],["Mayfair",150],
+  ]},
+  { id:"sangria", g:"Bebidas", n:"Sangria 1 Litro", items:[
+    ["Sangria Vinho Tinto",1690],["Sangria Vinho Branco",1690],["Sangria Espumante Branco",1850],
+    ["Sangria Espumante Rosé",1850],["Sangria Espumante s/ Álcool",1490],
+  ]},
+  { id:"vinho-copo", g:"Bebidas", n:"Vinho Mini (250ml)", items:[
+    ["Cavalo Branco 250ml",450],["Segredos de São Miguel 250ml",650],["Casa da Malta Mini",450],
+  ]},
+
+  /* ---------- COCKTAILS & SHOTS ---------- */
+  { id:"cocktails-sem", g:"Cocktails & Shots", n:"Cocktails sem Álcool", items:[
+    ["Strawberry Daiquiri (sem álcool)",300],["Passion Limonada",300],["Limonada de Menta",300],
+    ["Sprite à Sweet Place",300],["Ananás Daiquiri (sem álcool)",300],["Piña Colada (sem álcool)",300],["Blue Hawaii (sem álcool)",300],
+  ]},
+  { id:"cocktails", g:"Cocktails & Shots", n:"Cocktails com Álcool", items:[
+    ["Blue Lagoon",350],["Sex on the Beach",350],["Tequila Sunrise",350],["Piña Colada",350],
+    ["Strawberry Daiquiri",350],["Savanarita",350],["Brutalita",350],["Corona Sunrise",350],
+    ["Margarita",350],["Margarita Blue/Red",350],["Margarita Frozen",350],["Dom Pedro",350],
+    ["Long Island Ice Tea",350],["Tipotinto",350],["Martini Espresso",350],
+  ]},
+  { id:"sweet-cocktails", g:"Cocktails & Shots", n:"Cocktails à Sweet Place", items:[
+    ["Sweet Strawberry",500],["Sweet Passion Fruit",500],["Sweet Tropical",500],
+    ["Sweet Blue Muler",500],["Martini Dry",500],["Gin Strawberry",500],
+  ]},
+  { id:"champanhe-cocktails", g:"Cocktails & Shots", n:"Cocktails com Champanhe", items:[
+    ["Tropical Champanhe",350],["Champanhe Pink",350],["Mimosa Champanhe",350],["Jack Frost Mimosa",350],
+  ]},
+  { id:"caipirinhas", g:"Cocktails & Shots", n:"Caipirinhas / Mojitos", items:[
+    ["Caipirinha de Limão",250],["Caipirinha de Morango",250],["Caipirinha de Maracujá",250],
+    ["Caipirinha Blue",300],["Caipirinha de Frutos Vermelhos",300],
+    ["Mojito de Limão",400],["Mojito de Morango",400],["Mojito de Maracujá",400],
+    ["Mojito de Frutos Vermelhos",500],["Mojito Blue",450],
+  ]},
+  { id:"shots", g:"Cocktails & Shots", n:"Shots", items:[
+    ["Olmeca Tequila",250],["José Cuervo Tequila",250],["Jägermeister",300],["Blow Job",350],
+    ["Sambuca",250],["Bob Marley",300],["Jägerbomb",450],["“69”",300],
+  ]},
+  { id:"licor", g:"Cocktails & Shots", n:"Licores", items:[
+    ["Kahlúa",150],["Beirão",200],["Ferreira Porto (cálice)",400],["Malibu",150],["Amarula",150],["Passion Fruit",100],
+  ]},
+  { id:"simples", g:"Cocktails & Shots", n:"Destilados (dose simples)", items:[
+    ["Rum Bacardi (branco/preto/gold)",150,"Indique a cor nas observações"],
+    ["Rum Captain Morgan",150],["Rum Spiced Gold",150],
+    ["Aguardente São Domingos",150],["Aguardente 1920",150],["Aguardente CRF",175],
+    ["Whisky JW Black Label",250],["Whisky Glenfiddich 12Y",200],["Whisky Glenfiddich 15Y",300],
+    ["Whisky Glenfiddich 18Y",400],["Whisky Jameson Irish",200],["Whisky Jameson IPA",200],
+    ["Cognac Hennessy VS",300],["Cognac Hennessy VSOP",400],
+    ["Vodka Absolut",150],["Chivas",250],
+    ["Gin Gordon's",150],["Gin Tanqueray Dry",200],["Gin Beefeater Pink",200],
+  ]},
+
+  /* ---------- GARRAFAS ---------- */
+  { id:"espumantes", g:"Garrafas", n:"Champanhe e Espumantes", items:[
+    ["JC Le Roux (lata)",200],["JC Le Roux (garrafa)",1200],["Tosti Moscato",1700],["Nua Moscato",1700],
+    ["Moët Nectar",9000],["Veuve Clicquot Rich",10000],
+    ["Chandor s/ Álcool Branco",1100],["JC Le Roux s/ Álcool",1200],["Anabela s/ Álcool",1200],
+  ]},
+  { id:"vinhos-brancos", g:"Garrafas", n:"Vinhos Brancos", items:[
+    ["Quinta da Bolota Blanc",1600],["Segredos de São Miguel Blanc",2500],["Fat Bastard Blanc",2000],
+    ["Gatão",1500],["Casal Garcia",1500],
+  ]},
+  { id:"vinhos-tintos", g:"Garrafas", n:"Vinhos Tintos", items:[
+    ["Cabriz Tinto",1500],["Silk e Spice",2000],["Mucho Más",2100],["Terra Linda",2000],
+    ["Quinta da Bolota",1500],["Quinta da Bolota Prestige",1800],["Portada",1500],["D. Ermelinda",2100],
+    ["Fat Bastard Chardonnay",2000],["Fat Bastard Cabernet Sauvignon",2100],
+  ]},
+  { id:"reservas", g:"Garrafas", n:"Reservas", items:[
+    ["D. Ermelinda Reserva",2700],["Stellenbosch Reserva",2700],["Fat Bastard Reserva",2700],["Cabriz Reserva",2700],
+  ]},
+  { id:"garrafa-fortes", g:"Garrafas", n:"Cognac, Tequila, Whisky e Gin (garrafa)", items:[
+    ["Cognac Hennessy V.S.O.P (garrafa)",7500],["Cognac Hennessy V.S (garrafa)",5500],
+    ["Tequila Olmeca Gold (garrafa)",2800],["Tequila Olmeca Chocolate (garrafa)",2800],["Tequila Olmeca Silver (garrafa)",2800],
+    ["Whisky JW Black Label (garrafa)",3200],["Whisky JW Double Black (garrafa)",5000],
+    ["Whisky Glenfiddich 12Y (garrafa)",5000],["Whisky Glenfiddich 15Y (garrafa)",6000],["Whisky Glenfiddich 18Y (garrafa)",8500],
+    ["Whisky Jameson Irish (garrafa)",2800],["Whisky Jameson IPA (garrafa)",3200],["Whisky Jameson Black Barrel (garrafa)",5000],
+    ["Gin Beefeater Dry (garrafa)",2500],["Gin Beefeater Pink (garrafa)",3000],["Gin Tanqueray Dry (garrafa)",3000],
+    ["Gin Tanqueray N.10 (garrafa)",5000],["Gin Tanqueray Royale (garrafa)",3500],
+  ]},
+
+  /* ---------- SOBREMESAS ---------- */
+  { id:"sobremesa", g:"Sobremesas", n:"Sobremesas", items:[
+    ["Pudim",290],["Bolo de Chocolate",250],["Cheesecake",320],
+  ]},
+  { id:"milkshakes", g:"Sobremesas", n:"Milkshakes", items:[
+    ["Milkshake à Sweet Place",450,"190g sorvete de vanila, 75g bolacha Oreo, 75g morango, 80ml leite"],
+    ["Milkshake de Chocolate",350,"190g sorvete de chocolate, 75g Nutella, 80ml leite"],
+    ["Milkshake de Oreo",350,"190g sorvete de vanila, 125g bolacha Oreo, 80ml leite"],
+    ["Milkshake de Morango",300,"190g sorvete de vanila, 130g morango fresco, 80ml leite"],
+    ["Milkshake de Maracujá",350,"190g sorvete de vanila, 100g maracujá, 80ml leite"],
+  ]},
+  { id:"sorvetes", g:"Sobremesas", n:"Sorvetes", items:[
+    ["Cone Simples",75],["Copo 175ml",100],["Copo 250ml",150],["Copo 350ml",220],
+    ["Big Deal",200],["Magnum",250],["Nice Nilla",150],["Sweet Heart",75],
+    ["Fusion",75],["Grape",75],["Hi Boy",75],["Cone Vanila / Chocolate",250,"Escolha o sabor nas observações"],
+    ["Fruit Juice",75],["Choc-Lina",75],["Lemon e Lima",75],["Choco25",150],
+  ]},
+];
+
+
+/* ================= IMAGENS (ilustrações vetoriais por produto) ================= */
+const G='stroke="#6b5a4a" stroke-width="1.6" stroke-linejoin="round"';
+const GL=`fill="#fff" fill-opacity=".6" ${G}`;
+const B={
+ cup:c=>`<ellipse cx="32" cy="52" rx="24" ry="5" fill="#ddd"/><path d="M14 26h30v10a14 14 0 0 1-14 14h-2a14 14 0 0 1-14-14z" fill="#fff" ${G}/><path d="M15 27h28v6H15z" fill="${c}"/><path d="M44 29h4a5 5 0 0 1 0 10h-5" fill="none" ${G}/><path d="M22 20c-2-3 2-4 0-8M30 20c-2-3 2-4 0-8" stroke="#999" fill="none" stroke-width="1.6" stroke-linecap="round"/>`,
+ can:c=>`<rect x="22" y="10" width="20" height="44" rx="4" fill="${c}" ${G}/><rect x="22" y="10" width="20" height="5" fill="#ccc"/><ellipse cx="32" cy="32" rx="6" ry="10" fill="#fff" fill-opacity=".85"/>`,
+ bottle:c=>`<path d="M28 6h8v14l4 8v26a4 4 0 0 1-4 4h-8a4 4 0 0 1-4-4V28l4-8z" fill="${c}" ${G}/><rect x="24" y="34" width="16" height="14" fill="#fff" fill-opacity=".9"/><rect x="28" y="6" width="8" height="4" fill="#d4a017"/>`,
+ champ:c=>`<path d="M28 4h8v18l5 10v22a4 4 0 0 1-4 4H27a4 4 0 0 1-4-4V32l5-10z" fill="${c}" ${G}/><rect x="28" y="4" width="8" height="13" fill="#d4a017"/><rect x="24" y="38" width="16" height="12" fill="#fff" fill-opacity=".9"/>`,
+ spirit:c=>`<path d="M28 6h8v6h-2v8c6 4 8 8 8 14v18a4 4 0 0 1-4 4H26a4 4 0 0 1-4-4V34c0-6 2-10 8-14v-8h-2z" fill="${c}" ${G}/><rect x="24" y="34" width="16" height="16" rx="2" fill="#f5e6c0"/><rect x="27" y="4" width="10" height="5" fill="#222"/>`,
+ draft:c=>`<path d="M20 12h24l-3 40a3 3 0 0 1-3 3H26a3 3 0 0 1-3-3z" fill="${c}" ${G}/><path d="M20 12h24l-.6 9H20.6z" fill="#fff"/><path d="M44 22h4a4 4 0 0 1 0 14h-4" fill="none" ${G}/>`,
+ wine:c=>`<path d="M20 8h24c0 14-4 22-12 22S20 22 20 8z" ${GL}/><path d="M22 16h20c-1 9-4 14-10 14s-9-5-10-14z" fill="${c}"/><path d="M32 30v20M22 52h20" fill="none" ${G}/>`,
+ cocktail:c=>`<path d="M20 12h24c3 14-6 18-6 28v8h8v4H18v-4h8v-8c0-10-9-14-6-28z" ${GL}/><path d="M23 20h18c1 8-4 11-6 16h-6c-2-5-7-8-6-16z" fill="${c}"/><circle cx="46" cy="12" r="5" fill="#f28c28"/><path d="M36 18l8-14" stroke="#b3232b" stroke-width="2"/>`,
+ tumbler:c=>`<path d="M16 14h32l-3 38a3 3 0 0 1-3 3H22a3 3 0 0 1-3-3z" ${GL}/><path d="M18 24h28l-2 28H20z" fill="${c}"/><rect x="25" y="28" width="9" height="9" rx="2" fill="#fff" fill-opacity=".6"/><rect x="34" y="35" width="9" height="9" rx="2" fill="#fff" fill-opacity=".5"/>`,
+ shot:c=>`<path d="M22 20h20l-3 30a3 3 0 0 1-3 3H28a3 3 0 0 1-3-3z" ${GL}/><path d="M24 30h16l-1.5 20H25.5z" fill="${c}"/><path d="M40 18l10-6a6 6 0 0 1-10 6z" fill="#9acd32"/>`,
+ juice:c=>`<path d="M20 14h24l-3 38a3 3 0 0 1-3 3H26a3 3 0 0 1-3-3z" ${GL}/><path d="M22 24h20l-2.5 28h-15z" fill="${c}"/><path d="M36 24l6-18" stroke="#b3232b" stroke-width="2"/><circle cx="22" cy="14" r="5" fill="#f28c28"/>`,
+ burger:c=>`<path d="M12 30a20 16 0 0 1 40 0z" fill="#d98e3a" ${G}/><rect x="10" y="31" width="44" height="5" rx="2.5" fill="#6bb04a"/><path d="M10 36h44l-4 5-6-3-6 5-6-5-6 4-6-4z" fill="#f2c230"/><rect x="10" y="39" width="44" height="7" rx="3.5" fill="#5a3320"/><path d="M12 47h40c0 6-6 9-10 9H22c-4 0-10-3-10-9z" fill="#e3a14b" ${G}/><g fill="#fff3d0"><ellipse cx="24" cy="20" rx="2" ry="1"/><ellipse cx="32" cy="17" rx="2" ry="1"/><ellipse cx="40" cy="21" rx="2" ry="1"/></g>`,
+ toast:c=>`<path d="M10 44L32 14l22 30z" fill="#e3b36b" ${G}/><path d="M18 44l14-19 14 19z" fill="${c}"/>`,
+ pizza:c=>`<circle cx="32" cy="32" r="23" fill="#e3a14b" ${G}/><circle cx="32" cy="32" r="19" fill="#e8553a"/><circle cx="32" cy="32" r="17" fill="#f2c94c" fill-opacity=".85"/><g fill="#b3232b"><circle cx="25" cy="26" r="4"/><circle cx="38" cy="30" r="4"/><circle cx="30" cy="40" r="4"/></g><g fill="#2d2d2d"><circle cx="38" cy="20" r="2"/><circle cx="22" cy="37" r="2"/><circle cx="43" cy="39" r="2"/></g>`,
+ pasta:c=>`<path d="M10 30h44a22 20 0 0 1-44 0z" fill="#fff" ${G}/><path d="M14 30c3-14 33-14 36 0z" fill="#e8c46a"/><path d="M18 30c2-8 26-8 28 0z" fill="${c}"/><path d="M22 22c4-4 6 2 10-2s6 2 10-1" stroke="#c9a24a" fill="none" stroke-width="2"/>`,
+ chicken:c=>`<ellipse cx="30" cy="36" rx="21" ry="15" fill="#c9792b" ${G}/><ellipse cx="26" cy="31" rx="11" ry="6" fill="#e39a45"/><path d="M48 28l8-9" stroke="#f5e6c0" stroke-width="4" stroke-linecap="round"/><circle cx="57" cy="18" r="3.5" fill="#f5e6c0"/>`,
+ steak:c=>`<path d="M9 34c0-13 15-19 29-14 12 3 17 12 13 20-4 9-19 11-29 7-8-3-13-6-13-13z" fill="#7a3b25" ${G}/><path d="M20 26l10 16M30 24l10 18M40 27l8 12" stroke="#3b1a10" stroke-width="2.2"/>`,
+ fish:c=>`<path d="M6 32c8-13 25-15 35-4l11-9v26l-11-9C31 47 14 45 6 32z" fill="${c}" ${G}/><circle cx="17" cy="30" r="2.2" fill="#fff"/>`,
+ squid:c=>`<path d="M32 5c9 6 11 21 6 31H26C21 26 23 11 32 5z" fill="#f4e6d8" ${G}/><path d="M26 36l-4 19m9-19l-2 21m6-21l2 21m4-21l4 19" stroke="#e8b6a0" stroke-width="3" stroke-linecap="round"/>`,
+ salad:c=>`<circle cx="22" cy="28" r="9" fill="#6bb04a"/><circle cx="34" cy="24" r="10" fill="#4f9a3a"/><circle cx="45" cy="29" r="8" fill="#7cc24f"/><circle cx="30" cy="28" r="3.5" fill="#e04b3a"/><circle cx="41" cy="26" r="3" fill="#f2c230"/><path d="M8 34h48a24 18 0 0 1-48 0z" fill="#fff" ${G}/>`,
+ bowl:c=>`<path d="M8 30h48a24 20 0 0 1-48 0z" fill="#fff" ${G}/><ellipse cx="32" cy="30" rx="24" ry="5" fill="${c}" ${G}/><path d="M24 22c-2-3 2-4 0-8M34 22c-2-3 2-4 0-8" stroke="#999" fill="none" stroke-width="1.6" stroke-linecap="round"/>`,
+ fries:c=>`<g fill="#f2c230"><rect x="20" y="10" width="5" height="22" rx="1"/><rect x="27" y="6" width="5" height="26" rx="1"/><rect x="34" y="9" width="5" height="23" rx="1"/><rect x="41" y="13" width="5" height="19" rx="1"/></g><path d="M16 28h32l-4 27H20z" fill="#b3232b" ${G}/>`,
+ plate:c=>`<ellipse cx="32" cy="38" rx="26" ry="16" fill="#fff" ${G}/><path d="M16 36c0-8 10-10 14-5 5-5 16-3 16 6 0 8-12 9-18 6-7 2-12-1-12-7z" fill="#fff" ${G}/><circle cx="26" cy="35" r="4.5" fill="#f2b705"/><circle cx="39" cy="37" r="4.5" fill="#f2b705"/><rect x="14" y="44" width="26" height="4" rx="2" fill="#b3232b"/>`,
+ sushi:c=>`<ellipse cx="22" cy="38" rx="13" ry="11" fill="#222" ${G}/><ellipse cx="22" cy="36" rx="10" ry="8" fill="#fff"/><circle cx="22" cy="36" r="4" fill="${c}"/><ellipse cx="43" cy="32" rx="13" ry="11" fill="#222" ${G}/><ellipse cx="43" cy="30" rx="10" ry="8" fill="#fff"/><circle cx="43" cy="30" r="4" fill="#6bb04a"/><ellipse cx="43" cy="30" rx="10" ry="2.5" fill="${c}" fill-opacity=".5"/>`,
+ cake:c=>`<path d="M8 30l46-8v26H8z" fill="#5a3a22" ${G}/><path d="M8 30l46-8v7L8 37z" fill="${c}"/><circle cx="44" cy="16" r="4" fill="#b3232b"/>`,
+ flan:c=>`<ellipse cx="32" cy="48" rx="26" ry="6" fill="#fff" ${G}/><path d="M14 46c0-18 8-26 18-26s18 8 18 26z" fill="${c}" ${G}/><path d="M22 30c0-5 4-8 8-8" stroke="#fff" stroke-opacity=".5" stroke-width="3" fill="none"/>`,
+ shake:c=>`<path d="M20 22h24l-4 30a3 3 0 0 1-3 3H27a3 3 0 0 1-3-3z" fill="${c}" ${G}/><path d="M18 22c0-9 8-13 14-13s14 4 14 13z" fill="#fff" ${G}/><circle cx="34" cy="8" r="4" fill="#b3232b"/><path d="M25 26c2 6 2 10 0 15" stroke="#3b1a10" stroke-width="3" stroke-linecap="round"/>`,
+ cone:c=>`<path d="M22 30l10 28 10-28z" fill="#d9a05b" ${G}/><circle cx="32" cy="24" r="11" fill="${c}" ${G}/><circle cx="27" cy="18" r="6" fill="${c}"/>`,
+ cupice:c=>`<path d="M20 34h24l-3 22H23z" fill="#fff" ${G}/><circle cx="32" cy="27" r="12" fill="${c}" ${G}/><path d="M24 22c4-6 12-6 16 0" stroke="#fff" stroke-opacity=".6" stroke-width="3" fill="none"/>`,
+ pop:c=>`<rect x="29" y="38" width="6" height="20" rx="2" fill="#d9a05b"/><rect x="20" y="6" width="24" height="36" rx="12" fill="${c}" ${G}/><rect x="25" y="11" width="5" height="14" rx="2.5" fill="#fff" fill-opacity=".5"/>`
+};
+const KIND={cafetaria:'cup',refrescos:'can',sumos:'juice',draft:'draft',garrafa:'bottle',lata:'can','sem-alcool':'bottle',cidras:'bottle',sangria:'wine','vinho-copo':'wine',
+ 'cocktails-sem':'cocktail',cocktails:'cocktail','sweet-cocktails':'cocktail','champanhe-cocktails':'cocktail',caipirinhas:'tumbler',shots:'shot',licor:'shot',simples:'tumbler',
+ espumantes:'champ','vinhos-brancos':'bottle','vinhos-tintos':'bottle',reservas:'bottle','garrafa-fortes':'spirit',
+ 'pequeno-almoco':'plate',tapas:'bowl',tostas:'toast',hamburgueres:'burger',saladas:'salad',pizzas:'pizza',massas:'pasta',aves:'chicken',carnes:'steak',mariscos:'fish',sushi:'sushi',extras:'bowl',sobremesa:'cake',milkshakes:'shake',sorvetes:'pop'};
+const KW=[
+ [/zero|jäger|jager|kahl|black|choc|nutella|café|galão|capp|expresso|oreo|bob marley|beirão|porto|reserva|stout/i,"#4a2a18"],
+ [/coca|tinto|cereja|vermelh|hennessy|veuve|brutal|spin|cabriz|silk|mucho|terra|portada|bolota$|bolota prestige|ermelinda|big deal|magnum|nice|red/i,"#8e1b1f"],
+ [/morango|strawberry|rosé|pink|blush|sweet heart/i,"#d9456f"],
+ [/maracujá|passion|ananás|limonada|bacardi|amarula|gold|champanhe|espumante|moscato|chandor|le roux|tropical|sunrise|hawai|blanc|casal|gatão|cappy|manga|exótico|laranja|fanta|mimosa|nectar|cheesecake|baunilha|vanil|sweet tropical/i,"#e0a21a"],
+ [/blue|lagoon|tónica|água|agua|gin|vodka|absolut|gordon|tanqueray|beefeater|malibu|dry lemon|ginger|grapetiser|grape|uva|fusion|appletiser|dry|hi boy/i,"#4aa3d8"],
+ [/heineken|sprite|lima|menta|mojito|hunters|savanna|lemon|limão|spiced/i,"#4a9a3a"]];
+const colorOf=n=>{for(const[r,c]of KW)if(r.test(n))return c;return"#d89a1c"};
+function kindOf(i){
+ const cid=i.id.replace(/_\d+$/,''),n=i.name;let k=KIND[cid]||'bowl';
+ if(cid==='sumos')k=/água|appletiser|grapetiser/i.test(n)?'bottle':'juice';
+ if(cid==='tapas'&&/rissó|chamussa|pão/i.test(n))k='toast';
+ if(cid==='extras')k=/pizza/i.test(n)?'pizza':/batata/i.test(n)?'fries':'bowl';
+ if(cid==='mariscos'&&/lula/i.test(n))k='squid';
+ if(cid==='sobremesa'&&/pudim/i.test(n))k='flan';
+ if(cid==='sorvetes')k=/^cone/i.test(n)?'cone':/^copo/i.test(n)?'cupice':'pop';
+ if(cid==='simples'&&/cognac|hennessy/i.test(n))k='tumbler';
+ return k;
+}
+const ART={};
+function art(i){
+ if(ART[i.id])return ART[i.id];
+ const c=colorOf(i.name),k=kindOf(i);
+ return ART[i.id]=`<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(i.name)}"><rect width="64" height="64" style="fill:var(--tile)"/>${B[k](c)}</svg>`;
+}
+
+
+/* Itens com id estável + grupo */
+MENU.forEach(c => c.items = c.items.map((it, i) => ({ id: c.id + "_" + i, name: it[0], price: it[1], desc: it[2] || "", cat: c.n, g: c.g })));
+const ITEM = {};
+MENU.forEach(c => c.items.forEach(i => ITEM[i.id] = i));
+
+/* ================= ESTADO ================= */
+let cart = {}, orders = [], orderType = "aqui", curCat = MENU[0].id, curItem = null, qty = 1, cur = "s-home", stack = [];
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+function load() {
+  const c = store.get("sp_cart2", {});
+  Object.keys(c).forEach(k => { if (ITEM[k] && c[k] > 0) cart[k] = c[k]; });
+  orders = store.get("sp_orders2", []);
+  const n = store.get("sp_name2", "");
+  if (n) $("#fName").value = n;
+}
+const totals = () => { let n = 0, s = 0; for (const [id, q] of Object.entries(cart)) { n += q; s += q * ITEM[id].price; } return { n, s }; };
+const itemsLbl = n => n + (n === 1 ? " item" : " itens");
+let tt;
+function toast(m) { const t = $("#toast"); t.textContent = m; t.classList.add("on"); clearTimeout(tt); tt = setTimeout(() => t.classList.remove("on"), 1600); }
+
+/* ================= NAVEGAÇÃO ================= */
+function show(id) {
+  cur = id;
+  $$(".screen").forEach(s => s.classList.toggle("on", s.id === id));
+  window.scrollTo(0, 0);
+  bars();
+}
+function go(id) { stack.push(cur); show(id); }
+function back() { show(stack.pop() || "s-home"); }
+function bars() {
+  const { n, s } = totals();
+  $("#barRest").classList.toggle("on", cur === "s-rest" && n > 0);
+  $("#barProd").classList.toggle("on", cur === "s-prod");
+  $("#bTotal").textContent = fmt(s);
+  $("#bCount").textContent = "/ " + itemsLbl(n);
+}
+
+/* ================= 1. INÍCIO ================= */
+$("#homeBurger").innerHTML = `<svg viewBox="0 0 64 64" style="width:104px;height:104px">${B.burger("#f2c230")}</svg>`;
+$("#banner").innerHTML = [["cocktail","#e0a21a"],["burger"],["pizza"],["draft","#d89a1c"],["sushi","#d9456f"],["champ","#e0a21a"],["shake","#8e1b1f"]]
+  .map(([k, c]) => `<svg viewBox="0 0 64 64">${B[k](c || "#f2c230")}</svg>`).join("");
+
+/* ================= 2. RESTAURANTE ================= */
+function pHTML(i) {
+  return `<button class="p" data-open="${i.id}"><div><h3>${esc(i.name)}</h3><p>${esc(i.desc || i.cat)}</p><b>${fmt(i.price)}</b></div><div class="pimg">${art(i)}</div></button>`;
+}
+function renderRest() {
+  $("#typeLbl").textContent = orderType === "aqui" ? "Para comer aqui" : "Para levar";
+  $("#chips").innerHTML = MENU.map(c => `<button class="chip${c.id === curCat ? " on" : ""}" data-chip="${c.id}">${esc(c.n)}</button>`).join("");
+  const q = $("#q").value.trim().toLowerCase();
+  let list, title;
+  if (q) {
+    list = Object.values(ITEM).filter(i => (i.name + " " + i.desc + " " + i.cat).toLowerCase().includes(q));
+    title = "Resultados";
+  } else {
+    const c = MENU.find(x => x.id === curCat);
+    list = c.items; title = c.n;
+  }
+  $("#listTitle").textContent = title;
+  $("#plist").innerHTML = list.length ? list.map(pHTML).join("") : `<div class="empty">Nenhum produto encontrado.</div>`;
+  const act = $(".chip.on"); if (act && !q) act.scrollIntoView({ inline: "center", block: "nearest" });
+  bars();
+}
+
+/* ================= 3. PRODUTO ================= */
+function openProduct(id) {
+  curItem = id; qty = 1;
+  const i = ITEM[id];
+  $("#pTop").innerHTML = art(i);
+  const parts = i.desc ? i.desc.split(/,\s*/).map(s => s.charAt(0).toUpperCase() + s.slice(1)) : [];
+  const food = i.g === "Comida" || i.g === "Sobremesas";
+  $("#pBody").innerHTML = `
+    <div class="mini"><i>S</i>Sweet Place</div>
+    <h1>${esc(i.name)}</h1>
+    <div class="prow"><strong>${fmt(i.price)}</strong>
+      <div class="stepper"><button class="sb" data-q="-1" aria-label="Menos">${IC.l}</button><span id="pq">1</span><button class="sb red" data-q="1" aria-label="Mais">${IC.r}</button></div></div>
+    <h4 class="sec">Sobre</h4>
+    <p class="about">${esc(i.desc ? i.desc + "." : i.name + " — categoria " + i.cat + ", servido no Sweet Place Café & Bar.")}</p>
+    ${parts.length > 1 ? `<h4 class="sec">${IC.chef}${food ? "Ingredientes" : "Opções"}</h4><ul class="ing">${parts.map(p => `<li>${esc(p)}</li>`).join("")}</ul>` : ""}`;
+  go("s-prod");
+}
+
+/* ================= SACOLA ================= */
+function renderBag() {
+  const ids = Object.keys(cart), { s } = totals();
+  $("#lines").innerHTML = ids.length ? ids.map(id => {
+    const i = ITEM[id];
+    return `<div class="ln"><div class="pimg">${art(i)}</div>
+      <div class="mid"><h4>${esc(i.name)}</h4><b>${fmt(i.price * cart[id])}</b>
+        <div class="stepper"><button class="sb" data-dec="${id}" aria-label="Menos">${IC.l}</button><span>${cart[id]}</span><button class="sb red" data-inc="${id}" aria-label="Mais">${IC.r}</button></div></div>
+      <button class="sb" data-del="${id}" aria-label="Remover">${IC.t}</button></div>`;
+  }).join("") : `<div class="empty">A sua sacola está vazia.</div>`;
+  $("#sSub").textContent = fmt(s); $("#sDesc").textContent = fmt(0); $("#sTot").textContent = fmt(s);
+  $("#finBtn").disabled = !ids.length;
+  store.set("sp_cart2", cart);
+  bars();
+}
+const openBag = () => { renderBag(); $("#ov").classList.add("on"); $("#drawer").classList.add("on"); };
+const closeBag = () => { $("#ov").classList.remove("on"); $("#drawer").classList.remove("on"); };
+function addToCart(id, n) { cart[id] = (cart[id] || 0) + n; }
+
+/* ================= DADOS + WHATSAPP ================= */
+function openDados() {
+  $("#tblWrap").style.display = orderType === "aqui" ? "block" : "none";
+  $("#err").textContent = "";
+  $("#mDados").classList.add("on");
+}
+function message(o) {
+  let m = `*NOVO PEDIDO — ${NOME_LOCAL}*\n\n*Cliente:* ${o.name}\n`;
+  m += o.type === "aqui" ? `*Mesa:* ${o.table}\n` : `*Tipo:* Para levar\n`;
+  m += `\n*Itens:*\n` + o.items.map(i => `• ${i.qty}x ${i.name} — ${fmt(i.price * i.qty)}`).join("\n");
+  m += `\n\n*TOTAL: ${fmt(o.total)}*`;
+  if (o.obs) m += `\n\n*Observações:* ${o.obs}`;
+  return m;
+}
+function submit() {
+  const name = $("#fName").value.trim(), table = $("#fTable").value.trim(), obs = $("#fObs").value.trim();
+  const err = t => { $("#err").textContent = t; };
+  if (!name) return err("Escreva o seu nome.");
+  if (orderType === "aqui" && !table) return err("Indique o número da mesa.");
+  const items = Object.entries(cart).map(([id, q]) => ({ id, name: ITEM[id].name, price: ITEM[id].price, qty: q }));
+  if (!items.length) return err("A sacola está vazia.");
+  const o = { id: Date.now(), type: orderType, name, table, obs, items, total: totals().s, status: "prep" };
+  orders.unshift(o); store.set("sp_orders2", orders); store.set("sp_name2", name);
+  const a = document.createElement("a");
+  a.href = "https://wa.me/" + WHATSAPP_NUMBER + "?text=" + encodeURIComponent(message(o));
+  a.target = "_blank"; a.rel = "noopener";
+  document.body.appendChild(a); a.click(); a.remove();
+  cart = {}; $("#fObs").value = ""; renderBag(); closeBag();
+  $("#mDados").classList.remove("on"); $("#mOk").classList.add("on");
+}
+
+/* ================= PEDIDOS ================= */
+function renderOrders() {
+  $("#olist").innerHTML = orders.length ? orders.map(o => {
+    const done = o.status === "done";
+    return `<div class="oc"><div class="orow"><span class="badge ${done ? "done" : "prep"}">${done ? "Finalizado" : "Em preparo"}</span>
+      ${done ? "" : `<button class="fin" data-done="${o.id}">Marcar como finalizado</button>`}</div>
+      <div class="who"><i>S</i>Sweet Place</div>
+      <div class="its">${o.items.map(i => `<div><em>${i.qty}</em>${esc(i.name)}</div>`).join("")}</div>
+      <div class="foot"><span>${fmt(o.total)}</span><button class="re" data-reorder="${o.id}" ${done ? "" : "disabled"}>Adicionar à Sacola</button></div></div>`;
+  }).join("") : `<div class="empty">Ainda não fez nenhum pedido.</div>`;
+}
+
+/* ================= EVENTOS ================= */
+document.addEventListener("click", e => {
+  const t = e.target, $c = s => t.closest(s);
+  let el;
+  if (el = $c("[data-type]")) { orderType = el.dataset.type; renderRest(); go("s-rest"); return; }
+  if ($c("[data-back]")) { back(); return; }
+  if ($c("[data-orders]")) { renderOrders(); if (cur !== "s-orders") go("s-orders"); return; }
+  if (el = $c("[data-chip]")) { curCat = el.dataset.chip; $("#q").value = ""; renderRest(); return; }
+  if (el = $c("[data-open]")) { openProduct(el.dataset.open); return; }
+  if (el = $c("[data-q]")) { qty = Math.max(1, qty + +el.dataset.q); $("#pq").textContent = qty; return; }
+  if ($c("#addBtn")) { addToCart(curItem, qty); renderBag(); openBag(); toast(ITEM[curItem].name + " adicionado"); return; }
+  if ($c("#openBag")) { openBag(); return; }
+  if (el = $c("[data-inc]")) { addToCart(el.dataset.inc, 1); renderBag(); return; }
+  if (el = $c("[data-dec]")) { const id = el.dataset.dec; if (cart[id] > 1) cart[id]--; renderBag(); return; }
+  if (el = $c("[data-del]")) { delete cart[el.dataset.del]; renderBag(); return; }
+  if ($c("#ov") || ($c("#drawer [data-close]"))) { closeBag(); return; }
+  if ($c("#finBtn")) { openDados(); return; }
+  if ($c("#mDados [data-close]") || t.id === "mDados") { $("#mDados").classList.remove("on"); return; }
+  if ($c("#sendBtn")) { submit(); return; }
+  if ($c("#okOrders")) { $("#mOk").classList.remove("on"); renderOrders(); if (cur !== "s-orders") go("s-orders"); return; }
+  if ($c("#okCont")) { $("#mOk").classList.remove("on"); stack = ["s-home"]; renderRest(); show("s-rest"); return; }
+  if (el = $c("[data-done]")) { const o = orders.find(x => x.id == el.dataset.done); if (o) { o.status = "done"; store.set("sp_orders2", orders); renderOrders(); } return; }
+  if (el = $c("[data-reorder]")) {
+    const o = orders.find(x => x.id == el.dataset.reorder);
+    if (o) { o.items.forEach(i => { if (ITEM[i.id]) addToCart(i.id, i.qty); }); renderBag(); openBag(); }
+  }
+});
+$("#q").addEventListener("input", renderRest);
+document.addEventListener("keydown", e => { if (e.key === "Escape") { closeBag(); $("#mDados").classList.remove("on"); } });
+
+/* ================= INÍCIO ================= */
+load(); renderRest(); renderBag(); show("s-home");
+
+</script>
+</body>
+</html>
